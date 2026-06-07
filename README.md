@@ -1,5 +1,9 @@
 # kafka-bus-core
 
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/kafka-bus/kafka-bus/run-tests.yml?branch=1.x&label=tests&style=flat-square)](https://github.com/kafka-bus/kafka-bus/actions?query=workflow%3Arun-tests+branch%3A1.x)
+[![GitHub Code Style](https://img.shields.io/github/actions/workflow/status/kafka-bus/kafka-bus/php-code-style.yml?branch=1.x&label=code-style&style=flat-square)](https://github.com/kafka-bus/kafka-bus/actions?query=workflow%3Acode-style+branch%3A1.x)
+[![GitHub PHPStan](https://img.shields.io/github/actions/workflow/status/kafka-bus/kafka-bus/phpstan.yml?branch=1.x&label=phpstan&style=flat-square)](https://github.com/kafka-bus/kafka-bus/actions?query=workflow%3Aphpstan+branch%3A1.x)
+
 Монорепозиторий core-пакетов экосистемы [kafka-bus](https://github.com/kafka-bus/kafka-bus).
 
 ## Пакеты
