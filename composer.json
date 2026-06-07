@@ -21,7 +21,7 @@
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2.1",
         "symplify/monorepo-builder": "^11.2",
-        "testo/testo": "^0.10.2"
+        "testo/testo": "^0.10.17"
     },
     "repositories": [
         {"type": "path", "url": "packages/core"},

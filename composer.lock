@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5bd819b0264b418830969eb54dc4c014",
+    "content-hash": "d6387b58ad526f5791bc44a57a06adcd",
     "packages": [
         {
             "name": "kafka-bus/commiter",
