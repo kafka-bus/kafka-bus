@@ -1,0 +1,11 @@
+.idea
+.vscode
+
+/vendor
+/packages/*/vendor
+
+/.php-cs-fixer.cache
+/.phpunit.cache
+/phpstan.cache
+*.log
+.DS_Store

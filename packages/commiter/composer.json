@@ -1,0 +1,38 @@
+{
+    "name": "kafka-bus/commiter",
+    "description": "Consumer offset committer and producer idempotency middleware for Kafka Bus — prevents duplicate message processing",
+    "keywords": [
+        "kafka",
+        "kafka-bus",
+        "Apache Kafka",
+        "commiter",
+        "idempotency",
+        "inbox"
+    ],
+    "homepage": "https://github.com/kafka-bus/commiter",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kirill Popkov",
+            "email": "kirill.popkov.work@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "kafka-bus/core": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KafkaBus\\Commiter\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

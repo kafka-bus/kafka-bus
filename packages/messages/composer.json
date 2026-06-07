@@ -1,0 +1,39 @@
+{
+    "name": "kafka-bus/messages",
+    "description": "Message builder and DTO helpers for Kafka Bus — structured message creation and validation",
+    "keywords": [
+        "kafka",
+        "kafka-bus",
+        "Apache Kafka",
+        "message",
+        "dto"
+    ],
+    "homepage": "https://github.com/kafka-bus/messages",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kirill Popkov",
+            "email": "kirill.popkov.work@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-rdkafka": "*",
+        "kafka-bus/core": "*",
+        "webmozart/assert": "^1.11|^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "KafkaBus\\Messages\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

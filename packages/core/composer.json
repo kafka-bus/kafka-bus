@@ -1,0 +1,41 @@
+{
+    "name": "kafka-bus/core",
+    "description": "Core Kafka Bus library — consumer/producer pipelines, topic routing, and connection management for Apache Kafka",
+    "keywords": [
+        "kafka",
+        "kafka-bus",
+        "Apache Kafka",
+        "consumer",
+        "producer",
+        "pipeline"
+    ],
+    "homepage": "https://github.com/kafka-bus/core",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kirill Popkov",
+            "email": "kirill.popkov.work@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-rdkafka": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KafkaBus\\Core\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        },
+        "audit": {
+            "abandoned": "report"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

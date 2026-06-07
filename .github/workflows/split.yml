@@ -1,0 +1,40 @@
+name: Split monorepo
+
+# Запускается при пуше тега вида v1.2.3
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  GITHUB_TOKEN: ${{ secrets.MONOREPO_ACCESS_TOKEN }}
+
+jobs:
+  split:
+    name: "Split — ${{ matrix.package }}"
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - core
+          - commiter
+          - messages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Split package "${{ matrix.package }}"
+        uses: "danharrin/monorepo-split-github-action@v2.4.5"
+        with:
+          package_directory: "packages/${{ matrix.package }}"
+
+          repository_organization: "kafka-bus"
+          repository_name: "${{ matrix.package }}"
+
+          user_name: "popkovkirill"
+          user_email: "kirill.popkov.work@gmail.com"
+
+          tag: ${{ github.ref_name }}

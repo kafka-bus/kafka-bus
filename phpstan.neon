@@ -1,0 +1,15 @@
+parameters:
+    level: max
+
+    paths:
+        - packages/core/src
+        - packages/commiter/src
+        - packages/messages/src
+
+    # Все пакеты видят vendor/ монорепо через path-repositories
+    bootstrapFiles:
+        - vendor/autoload.php
+
+    # Суммарный baseline — чтобы не захламлять per-package файлы
+    # Генерируется: vendor/bin/phpstan analyse --generate-baseline
+    ignoreErrors: []
