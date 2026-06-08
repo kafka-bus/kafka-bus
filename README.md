@@ -31,7 +31,7 @@ composer test
 composer analyse
 
 # Code style
-composer format        # исправить
+composer format
 ```
 
 ## Changelog
