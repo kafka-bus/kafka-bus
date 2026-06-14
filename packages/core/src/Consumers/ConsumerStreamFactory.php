@@ -21,13 +21,12 @@ class ConsumerStreamFactory implements ConsumerStreamFactoryInterface
     {
         $configuration = $this->makeConsumerConfig($worker->options);
 
-        $consumerMessageHandler = $this->messageHandlerFactory
+        $messageHandler = $this->messageHandlerFactory
             ->create($worker);
 
         return new ConsumerStream(
-            $connection->createConsumer($consumerMessageHandler->topics(), $configuration),
-            $consumerMessageHandler,
-            $worker
+            $connection->createConsumer($messageHandler->topics(), $configuration),
+            $messageHandler,
         );
     }
 

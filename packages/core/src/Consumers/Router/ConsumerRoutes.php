@@ -30,4 +30,12 @@ final class ConsumerRoutes
     {
         return $this->routes[$topicName] ?? null;
     }
+
+    /**
+     * @return list<Route>
+     */
+    public function all(): array
+    {
+        return array_values($this->routes);
+    }
 }

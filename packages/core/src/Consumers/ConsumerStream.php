@@ -2,14 +2,10 @@
 
 namespace KafkaBus\Core\Consumers;
 
-use KafkaBus\Core\Bus\Listeners\Workers\Worker;
-use KafkaBus\Core\Consumers\Messages\WorkerConsumerMessage;
-use KafkaBus\Core\Consumers\Pipelines\ConsumerPipelineHandler;
 use KafkaBus\Core\Exceptions\Consumers\MessageConsumerException;
 use KafkaBus\Core\Interfaces\Consumers\ConsumerInterface;
 use KafkaBus\Core\Interfaces\Consumers\ConsumerStreamInterface;
 use KafkaBus\Core\Interfaces\Consumers\Handlers\MessageHandlerInterface;
-use KafkaBus\Core\Pipelines\PipelineBuilder;
 use KafkaBus\Core\Testing\Exceptions\KafkaMessagesEndedException;
 
 class ConsumerStream implements ConsumerStreamInterface
@@ -26,12 +22,10 @@ class ConsumerStream implements ConsumerStreamInterface
     /**
      * @param ConsumerInterface $consumer
      * @param MessageHandlerInterface $messageHandler
-     * @param Worker $worker
      */
     public function __construct(
         protected ConsumerInterface $consumer,
-        protected MessageHandlerInterface $messageHandler,
-        protected Worker $worker,
+        protected MessageHandlerInterface $messageHandler
     ) {
     }
 
@@ -39,19 +33,10 @@ class ConsumerStream implements ConsumerStreamInterface
     {
         do {
             try {
-                $consumerMessage = $this->consumer
-                    ->getMessage();
+                $consumerMessage = $this->consumer->getMessage();
 
-                $workerMessage = new WorkerConsumerMessage($this->worker->name, $consumerMessage);
-                $pipelineHandler = new ConsumerPipelineHandler($workerMessage, $this->messageHandler);
-
-                $pipeline = PipelineBuilder::for($pipelineHandler)
-                    ->middleware($this->worker->options->middleware)
-                    ->create();
-
-                $pipeline->start();
-
-                $this->consumer->commit($workerMessage);
+                $this->messageHandler->handle($consumerMessage);
+                $this->consumer->commit($consumerMessage);
             }
             catch (MessageConsumerException $exception) {
                 if (! \in_array($exception->consumerMessage->err, self::IGNORABLE_CONSUMER_ERRORS, true)) {
