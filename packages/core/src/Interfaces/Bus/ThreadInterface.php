@@ -34,10 +34,10 @@ interface ThreadInterface
     public function publishBatch(MessageBatch $messageBatch): void;
 
     /**
-     * @param non-empty-string $listenerWorkerName
+     * @param string|non-empty-list<string> $name
      * @return Listener
      *
      * @throws ListenerException
      */
-    public function listener(string $listenerWorkerName): Listener;
+    public function listener(string|array $name): Listener;
 }

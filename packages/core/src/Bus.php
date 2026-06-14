@@ -41,8 +41,8 @@ final class Bus implements BusInterface
         $this->thread->publishBatch($messageBatch);
     }
 
-    public function listener(string $listenerWorkerName): Listener
+    public function listener(string|array $name): Listener
     {
-        return $this->thread->listener($listenerWorkerName);
+        return $this->thread->listener($name);
     }
 }

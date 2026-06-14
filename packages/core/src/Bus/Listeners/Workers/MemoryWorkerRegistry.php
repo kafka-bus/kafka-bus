@@ -23,6 +23,14 @@ final class MemoryWorkerRegistry implements WorkerRegistryInterface
         return $this->workers[$workerName] ?? null;
     }
 
+    /**
+     * @return list<Worker>
+     */
+    public function all(): array
+    {
+        return array_values($this->workers);
+    }
+
     public static function make(): self
     {
         return new self();

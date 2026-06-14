@@ -39,9 +39,9 @@ final class Thread implements ThreadInterface
             ->publish($messageBatch);
     }
 
-    public function listener(string $listenerWorkerName): Listener
+    public function listener(string|array $name): Listener
     {
         return $this->listenerFactory
-            ->create($this->connection, $listenerWorkerName);
+            ->create($this->connection, $name);
     }
 }
