@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v1.1.1 - 2026-06-14
+
+### What's Changed
+
+* fix: Не объединять воркеры если был передан только один by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/3
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v1.1.0...v1.1.1
+
 ## v1.1.0 - 2026-06-14
 
 ### What's Changed
