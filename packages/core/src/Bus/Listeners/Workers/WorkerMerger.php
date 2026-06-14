@@ -23,6 +23,10 @@ final readonly class WorkerMerger
      */
     public function merge(array $workers): Worker
     {
+        if (\count($workers) === 1) {
+            return $workers[0];
+        }
+
         $routes = new ConsumerRoutes();
 
         foreach ($workers as $worker) {

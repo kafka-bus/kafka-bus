@@ -44,12 +44,14 @@ class ListenerFactory
      */
     private function createWorker(string|array $name): Worker
     {
+        $name = \is_array($name) && \count($name) === 1 ? $name[0] : $name;
+
         if (\is_string($name)) {
             return $this->workerRegistry->get($name)
                 ?? throw new ListenerException("Worker [$name] not found.");
         }
 
-        $workers = array_map(
+        $workers = \array_map(
             fn (string $workerName): Worker => $this->workerRegistry->get($workerName)
                 ?? throw new ListenerException("Worker [$workerName] not found."),
             $name,
