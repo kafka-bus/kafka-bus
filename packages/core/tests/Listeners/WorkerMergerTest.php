@@ -49,7 +49,7 @@ final class WorkerMergerTest
             $this->makeWorker('orders-worker', $registry, 'orders'),
         ]);
 
-        Assert::equals($merged->name, 'grouped-worker');
+        Assert::equals($merged->name, 'orders-worker');
     }
 
     public function mergedWorkerContainsAllRoutesFromSingleWorker(): void

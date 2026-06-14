@@ -44,6 +44,8 @@ class ListenerFactory
      */
     private function createWorker(string|array $name): Worker
     {
+        $name = \is_array($name) && \count($name) === 1 ? $name[0] : $name;
+
         if (\is_string($name)) {
             return $this->workerRegistry->get($name)
                 ?? throw new ListenerException("Worker [$name] not found.");
