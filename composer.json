@@ -20,9 +20,9 @@
         "friendsofphp/php-cs-fixer": "^3.64",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2.2",
-        "symplify/monorepo-builder": "^11.2",
+        "symplify/monorepo-builder": "^11.2.23",
         "testo/assert": "^0.1.6",
-        "testo/testo": "^0.10.17"
+        "testo/testo": "^0.10.23"
     },
     "repositories": [
         {"type": "path", "url": "packages/core"},
