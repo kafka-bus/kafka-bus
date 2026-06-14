@@ -51,7 +51,7 @@ class ListenerFactory
                 ?? throw new ListenerException("Worker [$name] not found.");
         }
 
-        $workers = \array_map(
+        $workers = array_map(
             fn (string $workerName): Worker => $this->workerRegistry->get($workerName)
                 ?? throw new ListenerException("Worker [$workerName] not found."),
             $name,
