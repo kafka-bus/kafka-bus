@@ -25,4 +25,9 @@ final class FakePipeline implements PipelineInterface
 
         return $this;
     }
+
+    public function result(): mixed
+    {
+        return true;
+    }
 }
