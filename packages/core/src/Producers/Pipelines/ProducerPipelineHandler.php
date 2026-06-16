@@ -39,6 +39,11 @@ final class ProducerPipelineHandler implements PipelineHandlerInterface
         return $this->target;
     }
 
+    public function topic(): Topic
+    {
+        return $this->topic;
+    }
+
     public function handle(): ProducerMessage
     {
         return new ProducerMessage(

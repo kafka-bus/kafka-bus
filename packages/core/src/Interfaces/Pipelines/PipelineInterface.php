@@ -3,7 +3,8 @@
 namespace KafkaBus\Core\Interfaces\Pipelines;
 
 /**
- * @template-covariant THandler of PipelineHandlerInterface
+ * @template TResult
+ * @template-covariant THandler of PipelineHandlerInterface<mixed, TResult>
  */
 interface PipelineInterface
 {
@@ -13,7 +14,12 @@ interface PipelineInterface
     public function handler(): PipelineHandlerInterface;
 
     /**
-     * @return PipelineInterface<THandler>
+     * @return PipelineInterface<TResult, THandler>
      */
     public function continue(): PipelineInterface;
+
+    /**
+     * @return TResult
+     */
+    public function result(): mixed;
 }

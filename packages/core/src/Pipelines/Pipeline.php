@@ -11,7 +11,7 @@ use KafkaBus\Core\Interfaces\Pipelines\PipelineMiddlewareInterface;
  * @template TResult
  * @template THandler of PipelineHandlerInterface<mixed, TResult>
  *
- * @implements PipelineInterface<THandler>
+ * @implements PipelineInterface<TResult, THandler>
  */
 final class Pipeline implements PipelineInterface
 {
@@ -25,7 +25,7 @@ final class Pipeline implements PipelineInterface
 
     /**
      * @param THandler $handler
-     * @param list<PipelineMiddlewareInterface<THandler>> $middlewares
+     * @param list<PipelineMiddlewareInterface<TResult, THandler>> $middlewares
      */
     public function __construct(
         protected PipelineHandlerInterface $handler,
@@ -33,6 +33,9 @@ final class Pipeline implements PipelineInterface
     ) {
     }
 
+    /**
+     * @return THandler
+     */
     public function handler(): PipelineHandlerInterface
     {
         return $this->handler;
@@ -50,7 +53,7 @@ final class Pipeline implements PipelineInterface
             return $this;
         }
 
-        /** @var PipelineMiddlewareInterface<THandler> $middleware */
+        /** @var PipelineMiddlewareInterface<TResult, THandler> $middleware */
         $middleware = array_shift($this->middlewares);
 
         return $middleware->handle($this);
@@ -63,6 +66,14 @@ final class Pipeline implements PipelineInterface
     {
         $this->continue();
 
+        return $this->result();
+    }
+
+    /**
+     * @return TResult|null
+     */
+    public function result(): mixed
+    {
         return $this->result;
     }
 }

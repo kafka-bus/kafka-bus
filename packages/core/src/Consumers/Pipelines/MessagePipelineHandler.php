@@ -7,7 +7,7 @@ namespace KafkaBus\Core\Consumers\Pipelines;
 use KafkaBus\Core\Interfaces\Pipelines\PipelineHandlerInterface;
 
 /**
- * @implements PipelineHandlerInterface<mixed, true>
+ * @implements PipelineHandlerInterface<mixed, mixed>
  */
 final class MessagePipelineHandler implements PipelineHandlerInterface
 {
@@ -27,12 +27,12 @@ final class MessagePipelineHandler implements PipelineHandlerInterface
     }
 
     /**
-     * @return true
+     * @return mixed
      */
-    public function handle(): true
+    public function handle(): mixed
     {
         \call_user_func($this->handler, $this->target);
 
-        return true;
+        return $this->target();
     }
 }

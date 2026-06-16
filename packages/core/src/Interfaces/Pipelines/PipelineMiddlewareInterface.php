@@ -3,13 +3,14 @@
 namespace KafkaBus\Core\Interfaces\Pipelines;
 
 /**
- * @template THandler of PipelineHandlerInterface
+ * @template TResult
+ * @template THandler of PipelineHandlerInterface<mixed, TResult>
  */
 interface PipelineMiddlewareInterface
 {
     /**
-     * @param PipelineInterface<THandler> $pipeline
-     * @return PipelineInterface<THandler>
+     * @param PipelineInterface<TResult, THandler> $pipeline
+     * @return PipelineInterface<TResult, THandler>
      */
     public function handle(PipelineInterface $pipeline): PipelineInterface;
 }

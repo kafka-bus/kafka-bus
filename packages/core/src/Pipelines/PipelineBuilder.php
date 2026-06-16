@@ -15,7 +15,7 @@ use KafkaBus\Core\Interfaces\Pipelines\PipelineMiddlewareInterface;
 final class PipelineBuilder
 {
     /**
-     * @var list<PipelineMiddlewareInterface<THandler>>
+     * @var list<PipelineMiddlewareInterface<TResult, THandler>>
      */
     protected array $middleware = [];
 
@@ -41,7 +41,7 @@ final class PipelineBuilder
     }
 
     /**
-     * @template TPipelineMiddleware of PipelineMiddlewareInterface<THandler>
+     * @template TPipelineMiddleware of PipelineMiddlewareInterface<TResult, THandler>
      * @param list<TPipelineMiddleware> $middleware
      * @return $this
      */
