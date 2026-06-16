@@ -3,6 +3,7 @@
 namespace KafkaBus\Core\Consumers\Router;
 
 use KafkaBus\Core\Consumers\Pipelines\MessagePipelineHandler;
+use KafkaBus\Core\Consumers\Pipelines\MessagePipelineMiddleware;
 use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Interfaces\Consumers\Messages\MessageFactoryInterface;
 use KafkaBus\Core\Pipelines\PipelineBuilder;

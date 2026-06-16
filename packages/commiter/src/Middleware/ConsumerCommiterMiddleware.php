@@ -5,6 +5,7 @@ namespace KafkaBus\Commiter\Middleware;
 use Exception;
 use KafkaBus\Core\Consumers\Pipelines\ConsumerPipelineHandler;
 use KafkaBus\Core\Consumers\Pipelines\ConsumerPipelineMiddleware;
+use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Interfaces\Pipelines\PipelineInterface;
 use KafkaBus\Commiter\Interfaces\ConsumerMessageRepositoryInterface;
 use Psr\Log\LoggerInterface;
@@ -20,8 +21,8 @@ final readonly class ConsumerCommiterMiddleware implements ConsumerPipelineMiddl
     }
 
     /**
-     * @param PipelineInterface<ConsumerPipelineHandler> $pipeline
-     * @return PipelineInterface<ConsumerPipelineHandler>
+     * @param PipelineInterface<ConsumerMessageInterface, ConsumerPipelineHandler> $pipeline
+     * @return PipelineInterface<ConsumerMessageInterface, ConsumerPipelineHandler>
      *
      * @throws Exception
      */

@@ -2,6 +2,8 @@
 
 namespace KafkaBus\Core\Consumers\Router;
 
+use KafkaBus\Core\Consumers\Pipelines\MessagePipelineMiddleware;
+
 final readonly class RouteInfo
 {
     /**

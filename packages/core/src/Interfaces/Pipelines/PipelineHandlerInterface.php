@@ -3,8 +3,8 @@
 namespace KafkaBus\Core\Interfaces\Pipelines;
 
 /**
- * @template-covariant TTarget
- * @template-covariant TResult
+ * @template-covariant TTarget = mixed
+ * @template-covariant TResult = mixed
  */
 interface PipelineHandlerInterface
 {
