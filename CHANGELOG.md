@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v1.2.0 - 2026-06-16
+
+### What's Changed
+
+* refactor: Доработка Pipeline системы by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/4
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v1.1.1...v1.2.0
+
 ## v1.1.1 - 2026-06-14
 
 ### What's Changed
