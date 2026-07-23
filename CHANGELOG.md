@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v1.2.1 - 2026-07-23
+
+### What's Changed
+
+* feature: Добавлен EnumCaster by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/5
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v1.2.0...v1.2.1
+
 ## v1.2.0 - 2026-06-16
 
 ### What's Changed
