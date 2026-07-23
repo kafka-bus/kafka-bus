@@ -17,10 +17,13 @@ abstract class TestFactory
 
     protected MessageFactory $messageFactory;
 
+    protected string $topicKey = 'test';
+
     final public function __construct(
         protected Generator $faker,
     ) {
-        $this->messageFactory = new MessageFactory();
+        $this->messageFactory = (new MessageFactory())
+            ->withTopicKey($this->topicKey);
     }
 
     /**
