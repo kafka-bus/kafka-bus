@@ -12,6 +12,7 @@ final readonly class UserCredentialsConfig implements SaslConfigurationConfigInt
         public string $username,
         public string $password,
         public string $protocol = 'plaintext',
+        public string $mechanisms = 'PLAIN'
     ) {
     }
 
@@ -19,7 +20,7 @@ final readonly class UserCredentialsConfig implements SaslConfigurationConfigInt
     {
         return [
             'security.protocol' => $this->protocol,
-            'sasl.mechanisms' => 'PLAIN',
+            'sasl.mechanisms' => $this->mechanisms,
             'sasl.username' => $this->username,
             'sasl.password' => $this->password,
         ];

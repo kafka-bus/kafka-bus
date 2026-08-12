@@ -2,7 +2,6 @@
 
 namespace KafkaBus\Commiter\Repositories;
 
-use DateTimeImmutable;
 use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Commiter\Attempt;
 use KafkaBus\Commiter\Interfaces\ConsumerMessageRepositoryInterface;
@@ -18,7 +17,7 @@ final readonly class NativeMessageRepository implements ConsumerMessageRepositor
     public function attempt(ConsumerMessageInterface $message): Attempt
     {
         return $this->source->get($message->msgId())
-            ?? new Attempt($message->msgId(), 1, new DateTimeImmutable());
+            ?? new Attempt($message->msgId(), 1);
     }
 
     public function failed(ConsumerMessageInterface $message): void
