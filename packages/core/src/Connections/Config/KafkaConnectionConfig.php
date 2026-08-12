@@ -9,14 +9,14 @@ use KafkaBus\Core\Interfaces\Connections\ConnectionConfigInterface;
 final readonly class KafkaConnectionConfig implements ConnectionConfigInterface
 {
     /**
-     * @param string $broketList
+     * @param string $brokerList
      * @param int $logLevel
      * @param bool $debug
      * @param UserCredentialsConfig|null $saslConfig
      * @param array<string, string|int|bool|null> $extra
      */
     public function __construct(
-        public string $broketList,
+        public string $brokerList,
         public int $logLevel = LOG_DEBUG,
         public bool $debug = false,
         public ?UserCredentialsConfig $saslConfig = null,
@@ -28,7 +28,7 @@ final readonly class KafkaConnectionConfig implements ConnectionConfigInterface
     {
         /** @var array<string, string|int|bool> $options */
         $options = [
-            'metadata.broker.list' => $this->broketList,
+            'metadata.broker.list' => $this->brokerList,
             'log_level' => $this->logLevel,
             'debug' =>  $this->debug ? 'all' : null,
         ];
