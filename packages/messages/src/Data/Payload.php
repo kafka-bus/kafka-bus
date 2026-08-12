@@ -4,6 +4,8 @@ namespace KafkaBus\Messages\Data;
 
 use ArrayAccess;
 use JsonSerializable;
+use KafkaBus\Messages\Data\Casters\DateTimeCaster;
+use KafkaBus\Messages\Data\Casters\NullableCaster;
 use KafkaBus\Messages\Interfaces\CasterInterface;
 
 /**
@@ -19,18 +21,34 @@ class Payload implements JsonSerializable, ArrayAccess
     /**
      * @var array<string, CasterInterface>
      */
-    private array $casters;
+    private array $casters = [];
+
+    protected string $dateFormat = 'Y-m-d\TH:i:s.uP';
+
+    /**
+     * @var string[]
+     */
+    protected array $dates = [];
 
     /**
      * @param array<string, mixed> $attributes
      */
     public function __construct(array $attributes = [])
     {
-        $this->casters = $this->definitionCasters();
+        $this->registerCasters();
 
         foreach ($attributes as $key => $value) {
             $this->offsetSet($key, $value);
         }
+    }
+
+    private function registerCasters(): void
+    {
+        foreach ($this->dates as $attributeName) {
+            $this->casters[$attributeName] = new NullableCaster(new DateTimeCaster($this->dateFormat));
+        }
+
+        $this->casters = array_merge($this->casters, $this->definitionCasters());
     }
 
     /**
