@@ -2,6 +2,15 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v1.3.0 - 2026-08-12
+
+### What's Changed
+
+* fix: Небольшие исправления by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/6
+* feat: Теперь можно указывать dates без definitionCasters by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/7
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v1.2.1...v1.3.0
+
 ## v1.2.1 - 2026-07-23
 
 ### What's Changed
