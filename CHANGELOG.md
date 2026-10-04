@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.0.1 - 2026-10-04
+
+### What's Changed
+
+* fix: Исправление require у пакетов by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/9
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.0.0...v2.0.1
+
 ## v2.0.0 - 2026-10-04
 
 ### What's Changed
