@@ -9,7 +9,7 @@ PHP 8.2+ monorepo of five packages for integrating Apache Kafka into PHP applica
 ## Commands
 
 ```bash
-# Install dependencies (path-repositories create symlinks between packages)
+# Install dependencies (the root package autoloads packages/*/src directly)
 composer install
 
 # Run all tests
@@ -27,13 +27,21 @@ composer format
 # Validate monorepo consistency
 composer validate:monorepo
 
-# Release a new version (bumps all packages in sync)
-composer release <version>
+# Benchmarks (PHPBench, Kafka mocked); see benchmarks/README.md
+composer bench
+composer bench:docker
+
 ```
 
 Tests are discovered by Testo via `testo.php` at the repo root. There is no built-in single-file filter; all test suites run together via `vendor/bin/testo`.
 
+## Releasing
+
+Releases are made via a GitHub Release on `1.x` with a `vX.Y.Z` tag — there is no `composer release`. The tag triggers `.github/workflows/split.yml`, which first runs `.github/scripts/pin-interdependencies.sh` (rewrites `kafka-bus/*` constraints from `*` to `^X.Y` in `packages/*/composer.json`, only inside the split repos) and then pushes each package to its own repository; publishing the release triggers `update-changelog.yml`. Keep `*` between packages in the monorepo itself.
+
 ## Packages
+
+The root `kafka-bus/kafka-bus` is itself an installable package that ships all five (Moonshine-style): it autoloads `packages/*/src` and lists them in `replace` as `self.version`, maintained by hand. Consumers can `composer require kafka-bus/kafka-bus` or any single package. The root `require` holds only external deps (union of the packages' requirements); when adding a package or an external dependency to one, mirror it in the root `autoload`/`require`. `.gitattributes` keeps dev-only dirs out of the dist archive.
 
 | Package | Directory | Role |
 |---------|-----------|------|
@@ -43,7 +51,7 @@ Tests are discovered by Testo via `testo.php` at the repo root. There is no buil
 | `kafka-bus/worker` | `packages/worker/` | Kafka polling loop infrastructure (`Worker`, `WorkerRunner`) — reads raw messages and dispatches them to `Bus` |
 | `kafka-bus/metadata` | `packages/metadata/` | Kafka cluster metadata: topics/partitions listing, consumer group offsets inspection and administration |
 
-`commiter`, `messages`, `worker` and `metadata` depend only on `core`. All five are versioned and released in sync via `monorepo-builder.php`.
+`commiter`, `messages`, `worker` and `metadata` depend only on `core`. All five are versioned and released in sync by the same tag (see Releasing).
 
 ## Architecture
 
@@ -93,10 +101,19 @@ Reading from Kafka is not `Bus`'s job — a `Worker` (from `kafka-bus/worker`) o
 - `Middleware/` — `ConsumerCommiterMiddleware`, `PublisherIdempotencyMiddleware`
 - `Repositories/` — `ArrayMessageRepository`, `NativeMessageRepository`, `IdempotencyMessageRepository`
 
+## Benchmarks (`benchmarks/`)
+
+Dev-only [PHPBench](https://phpbench.readthedocs.io) suite (not a package, not released) measuring the cost of the packages with Kafka mocked. Real-Kafka benchmarks are intentionally out of scope — they are run on a finished application.
+
+- `PublishBench`, `ConsumeBench`, `WorkerBench`, `MemoryLeakBench` (fails if memory grows after N ops + forced GC; `--group=memory`) — `*Bench.php` classes (`bench*` methods, `#[Revs]`, `#[BeforeMethods('setUp')]`); config in root `phpbench.json` (report `kafka-bus`)
+- `Fixtures/` — `BusFactory` (builds Bus with N topic routes), `DrainConnection`/`DrainProducer` (publish side must drain the stream so middleware run; core's `NullProducer` does not), `ArrayConsumer`, `Kafka` message helpers. Consume benches use core's `NullConnection`
+- `Dockerfile` + `compose.yml` — reproducible run (1 CPU, 512 MB); results go to `benchmarks/results/` (gitignored)
+- Included in PHPStan and PHP-CS-Fixer; see `benchmarks/README.md`
+
 ## Code Style Constraints
 
 - All files: `declare(strict_types=1)`
-- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`, `KafkaBus\Worker`, `KafkaBus\Metadata`
-- All native function calls must be fully qualified: `\json_encode()`, `\array_map()`, etc.
+- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`, `KafkaBus\Worker`, `KafkaBus\Metadata` (dev-only: `KafkaBus\Workbench` in `workbench/`, `KafkaBus\Benchmarks` in `benchmarks/`)
+- Native function calls: follow what `composer format` produces — PHP-CS-Fixer (`native_function_invocation`) strips the leading `\` from most of them (`array_map()`, `json_encode()`), and `packages/*/src` is written that way. Don't add `\` by hand; run `composer format` instead
 - PHPStan level max — no ignored errors without explicit baseline; missing type info for `ext-rdkafka` goes into `stubs/RdKafka.stub`
 - PHP-CS-Fixer enforces global namespace imports (no `use function`)
