@@ -20,7 +20,7 @@
     "require": {
         "php": "^8.2",
         "ext-rdkafka": "*",
-        "kafka-bus/core": "*",
+        "kafka-bus/core": "^2.0",
         "webmozart/assert": "^1.11|^2.0"
     },
     "autoload": {

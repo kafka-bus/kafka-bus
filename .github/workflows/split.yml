@@ -28,10 +28,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # В монорепозитории зависимости между пакетами "*" — подставляем ^MAJOR.MINOR тега только в сплит-репозитории
-      - name: Pin kafka-bus/* constraints to the tag version
-        run: .github/scripts/pin-interdependencies.sh "${{ github.ref_name }}"
-
       - name: Split package "${{ matrix.package }}"
         uses: "danharrin/monorepo-split-github-action@v2.4.5"
         with:
