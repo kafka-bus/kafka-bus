@@ -3,6 +3,7 @@ parameters:
 
     paths:
         - examples/
+        - benchmarks/
         - packages/core/src
         - packages/commiter/src
         - packages/messages/src
