@@ -74,10 +74,12 @@ class Consumer implements ConsumerInterface
     /**
      * @param list<string> $topicNames
      * @return void
+     *
+     * @throws Exception
      */
     public function subscribe(array $topicNames): void
     {
-        $this->subscribe($topicNames);
+        $this->consumer->subscribe($topicNames);
     }
 
     /**
