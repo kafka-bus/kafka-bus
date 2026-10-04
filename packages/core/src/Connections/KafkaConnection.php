@@ -10,14 +10,13 @@ use KafkaBus\Core\Consumers\Commiters\DefaultCommiter;
 use KafkaBus\Core\Consumers\Commiters\VoidCommiter;
 use KafkaBus\Core\Consumers\Consumer;
 use KafkaBus\Core\Consumers\ConsumerConfig;
+use KafkaBus\Core\Consumers\ConsumerInterface;
 use KafkaBus\Core\Interfaces\Connections\ConnectionHasTopicsInterface;
-use KafkaBus\Core\Interfaces\Connections\ConnectionInterface;
 use KafkaBus\Core\Interfaces\Connections\Topics\ConnectionTopicsInterface;
-use KafkaBus\Core\Interfaces\Consumers\ConsumerInterface;
-use KafkaBus\Core\Interfaces\Producers\ProducerInterface;
 use KafkaBus\Core\Producers\Producer;
 use KafkaBus\Core\Producers\ProducerConfig;
-use KafkaBus\Core\Support\RetryRepeater;
+use KafkaBus\Core\Producers\ProducerInterface;
+use KafkaBus\Core\Utils\RetryRepeater;
 use KafkaBus\Core\Topics\Topic;
 
 class KafkaConnection implements
@@ -58,13 +57,12 @@ class KafkaConnection implements
         return $this->options;
     }
 
-    public function createConsumer(array $topics, ConsumerConfig $config): ConsumerInterface
+    public function createConsumer(ConsumerConfig $config): ConsumerInterface
     {
         $consumer = $this->consumerFactory->make($config);
 
         return new Consumer(
             consumer: $consumer,
-            topicNames: array_column($topics, 'name'),
             commiter: $config->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter(),
             retryRepeater: new RetryRepeater(),
             consumerTimeout: $config->consumerTimeout,

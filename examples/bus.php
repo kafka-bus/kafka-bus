@@ -2,10 +2,10 @@
 
 
 use KafkaBus\Core\Bus;
-use KafkaBus\Core\Bus\Publishers\Router\PublisherRoutesBuilder;
 use KafkaBus\Core\Connections\Registry\ConnectionRegistry;
-use KafkaBus\Core\Consumers\Router\ConsumerRoutesBuilder;
-use KafkaBus\Core\Consumers\Router\RouteInfo;
+use KafkaBus\Core\Publishers\Routing\PublisherRoutesBuilder;
+use KafkaBus\Core\Receivers\Routing\ReceiverRoutesBuilder;
+use KafkaBus\Core\Receivers\Routing\RouteInfo;
 use KafkaBus\Core\Testing\Messages\ConsumerHandlerFaker;
 use KafkaBus\Core\Testing\Messages\ProducerMessageFaker;
 use KafkaBus\Core\Topics\Topic;
@@ -19,7 +19,7 @@ $consumeOptions = [
     'auto.offset.reset' => 'beginning',
 ];
 
-$consumerRoutes = ConsumerRoutesBuilder::make($topicRegistry)
+$consumerRoutes = ReceiverRoutesBuilder::make($topicRegistry)
     ->add(new RouteInfo('products', new ConsumerHandlerFaker()))
     ->build();
 
@@ -41,7 +41,7 @@ $bus = new Bus(
         ConnectionRegistry::default(),
         new Bus\ThreadFactory(
             new Bus\Listeners\ListenerFactory(workerRegistry: $workerRegistry),
-            new Bus\Publishers\PublisherFactory(routes: $publisherRoutes),
+            new \KafkaBus\Core\Publishers\PublisherFactory(routes: $publisherRoutes),
         )
     ),
     ConnectionRegistry::DEFAULT_CONNECTION_NAME

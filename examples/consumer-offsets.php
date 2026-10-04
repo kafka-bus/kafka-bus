@@ -2,7 +2,7 @@
 
 use KafkaBus\Core\Bus\Listeners\Partitions\CommitOffset;
 use KafkaBus\Core\Bus\Listeners\Partitions\Offset;
-use KafkaBus\Core\Interfaces\Bus\BusInterface;
+use KafkaBus\Core\BusInterface;
 use KafkaBus\Core\Topics\TopicRegistry;
 
 require '../vendor/autoload.php';

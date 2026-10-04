@@ -2,12 +2,12 @@
 
 namespace KafkaBus\Core\Connections\Registry;
 
+use KafkaBus\Core\Connections\Config\ConnectionConfigInterface;
 use KafkaBus\Core\Connections\Config\KafkaConnectionConfig;
 use KafkaBus\Core\Connections\Config\NullConnectionConfig;
+use KafkaBus\Core\Connections\ConnectionInterface;
 use KafkaBus\Core\Connections\KafkaConnection;
 use KafkaBus\Core\Connections\NullConnection;
-use KafkaBus\Core\Interfaces\Connections\ConnectionConfigInterface;
-use KafkaBus\Core\Interfaces\Connections\ConnectionInterface;
 use KafkaBus\Core\Exceptions\Connections\DriverException;
 
 class DriverRegistry

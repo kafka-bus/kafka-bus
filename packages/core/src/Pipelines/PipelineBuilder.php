@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace KafkaBus\Core\Pipelines;
 
-use KafkaBus\Core\Interfaces\Pipelines\PipelineHandlerInterface;
-use KafkaBus\Core\Interfaces\Pipelines\PipelineMiddlewareInterface;
-
 /**
  * @template TTarget
  * @template TResult

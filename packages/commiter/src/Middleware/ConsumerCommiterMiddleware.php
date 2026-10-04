@@ -3,15 +3,15 @@
 namespace KafkaBus\Commiter\Middleware;
 
 use Exception;
-use KafkaBus\Core\Consumers\Pipelines\ConsumerPipelineHandler;
-use KafkaBus\Core\Consumers\Pipelines\ConsumerPipelineMiddleware;
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
-use KafkaBus\Core\Interfaces\Pipelines\PipelineInterface;
 use KafkaBus\Commiter\Interfaces\ConsumerMessageRepositoryInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Pipelines\PipelineInterface;
+use KafkaBus\Core\Receivers\Pipelines\ReceiverPipelineHandler;
+use KafkaBus\Core\Receivers\Pipelines\ReceiverPipelineMiddleware;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-final readonly class ConsumerCommiterMiddleware implements ConsumerPipelineMiddleware
+final readonly class ConsumerCommiterMiddleware implements ReceiverPipelineMiddleware
 {
     public function __construct(
         private ConsumerMessageRepositoryInterface $repository,
@@ -21,8 +21,8 @@ final readonly class ConsumerCommiterMiddleware implements ConsumerPipelineMiddl
     }
 
     /**
-     * @param PipelineInterface<ConsumerMessageInterface, ConsumerPipelineHandler> $pipeline
-     * @return PipelineInterface<ConsumerMessageInterface, ConsumerPipelineHandler>
+     * @param PipelineInterface<ConsumerMessageInterface, ReceiverPipelineHandler> $pipeline
+     * @return PipelineInterface<ConsumerMessageInterface, ReceiverPipelineHandler>
      *
      * @throws Exception
      */

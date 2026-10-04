@@ -2,14 +2,14 @@
 
 namespace KafkaBus\Core\Testing;
 
+use KafkaBus\Core\Consumers\ConsumerInterface;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageConverter;
-use KafkaBus\Core\Interfaces\Consumers\ConsumerInterface;
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Testing\Connections\ConnectionFaker;
 use KafkaBus\Core\Testing\Exceptions\KafkaMessagesEndedException;
 use RdKafka\Message;
 
-class ConsumerFaker implements ConsumerInterface
+final class ConsumerFaker implements ConsumerInterface
 {
     /**
      * @param ConnectionFaker $connectionFaker
@@ -17,9 +17,9 @@ class ConsumerFaker implements ConsumerInterface
      * @param array<int, Message> $messages
      */
     public function __construct(
-        protected ConnectionFaker $connectionFaker,
-        protected ConsumerMessageConverter $consumerMessageConverter,
-        protected array $messages
+        private readonly ConnectionFaker $connectionFaker,
+        private readonly ConsumerMessageConverter $consumerMessageConverter,
+        private array $messages
     ) {
     }
 
@@ -36,5 +36,13 @@ class ConsumerFaker implements ConsumerInterface
     public function commit(ConsumerMessageInterface $consumerMessage): void
     {
         $this->connectionFaker->committedMessages[$consumerMessage->topicName()][] = $consumerMessage;
+    }
+
+    public function subscribe(array $topicNames): void
+    {
+    }
+
+    public function unsubscribe(): void
+    {
     }
 }

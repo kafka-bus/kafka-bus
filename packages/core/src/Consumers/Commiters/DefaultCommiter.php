@@ -2,7 +2,7 @@
 
 namespace KafkaBus\Core\Consumers\Commiters;
 
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use RdKafka\KafkaConsumer;
 
 class DefaultCommiter implements CommiterInterface

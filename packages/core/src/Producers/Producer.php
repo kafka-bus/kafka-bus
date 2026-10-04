@@ -2,10 +2,9 @@
 
 namespace KafkaBus\Core\Producers;
 
-use KafkaBus\Core\Interfaces\Producers\ProducerInterface;
 use KafkaBus\Core\Exceptions\Producers\CannotFlushProducerException;
 use KafkaBus\Core\Producers\Messages\ProducerMessage;
-use KafkaBus\Core\Support\RetryRepeater;
+use KafkaBus\Core\Utils\RetryRepeater;
 use KafkaBus\Core\Topics\Topic;
 use RdKafka\Producer as KafkaProducer;
 use RdKafka\ProducerTopic;

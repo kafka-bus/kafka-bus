@@ -5,6 +5,8 @@ parameters:
         - packages/core/src
         - packages/commiter/src
         - packages/messages/src
+        - packages/worker/src
+        - packages/partitions/src
 
     # Все пакеты видят vendor/ монорепо через path-repositories
     bootstrapFiles:

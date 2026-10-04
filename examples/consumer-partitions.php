@@ -1,6 +1,6 @@
 <?php
 
-use KafkaBus\Core\Interfaces\Bus\BusInterface;
+use KafkaBus\Core\BusInterface;
 
 require '../vendor/autoload.php';
 

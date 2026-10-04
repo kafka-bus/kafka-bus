@@ -2,7 +2,7 @@
 
 
 use KafkaBus\Core\Connections\KafkaConnection;
-use KafkaBus\Core\Interfaces\Connections\ConnectionRegistryInterface;
+use KafkaBus\Core\Connections\Registry\ConnectionRegistryInterface;
 use KafkaBus\Core\Topics\TopicRegistry;
 
 require '../vendor/autoload.php';

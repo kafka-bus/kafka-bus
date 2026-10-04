@@ -1,0 +1,38 @@
+{
+    "name": "kafka-bus/partitions",
+    "description": "Partition and offset inspection/administration API for Kafka Bus",
+    "keywords": [
+        "kafka",
+        "kafka-bus",
+        "Apache Kafka",
+        "partitions",
+        "offsets"
+    ],
+    "homepage": "https://github.com/kafka-bus/partitions",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kirill Popkov",
+            "email": "kirill.popkov.work@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-rdkafka": "*",
+        "kafka-bus/core": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KafkaBus\\Partitions\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

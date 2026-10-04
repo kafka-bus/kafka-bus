@@ -2,10 +2,10 @@
 
 namespace KafkaBus\Commiter\Repositories;
 
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Commiter\Attempt;
 use KafkaBus\Commiter\Interfaces\ConsumerMessageRepositoryInterface;
 use KafkaBus\Commiter\Interfaces\RepositorySourceInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 
 final readonly class NativeMessageRepository implements ConsumerMessageRepositoryInterface
 {

@@ -1,5 +1,5 @@
 {
-    "name": "micromus/kafka-bus-core",
+    "name": "kafka-bus/kafka-bus",
     "description": "Monorepo for kafka-bus core packages",
     "license": "MIT",
     "authors": [
@@ -13,13 +13,16 @@
         "php": "^8.2",
         "kafka-bus/core": "*",
         "kafka-bus/commiter": "*",
-        "kafka-bus/messages": "*"
+        "kafka-bus/messages": "*",
+        "kafka-bus/worker": "*",
+        "kafka-bus/partitions": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
         "friendsofphp/php-cs-fixer": "^3.64",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2.2",
+        "phpunit/phpunit": "^11.5",
         "symplify/monorepo-builder": "^11.2.23",
         "testo/assert": "^0.1.6",
         "testo/testo": "^0.10.23"
@@ -27,13 +30,17 @@
     "repositories": [
         {"type": "path", "url": "packages/core"},
         {"type": "path", "url": "packages/commiter"},
-        {"type": "path", "url": "packages/messages"}
+        {"type": "path", "url": "packages/messages"},
+        {"type": "path", "url": "packages/worker"},
+        {"type": "path", "url": "packages/partitions"}
     ],
     "autoload-dev": {
         "psr-4": {
             "KafkaBus\\Commiter\\Tests\\": "packages/commiter/tests/",
             "KafkaBus\\Messages\\Tests\\": "packages/messages/tests/",
             "KafkaBus\\Core\\Tests\\": "packages/core/tests/",
+            "KafkaBus\\Worker\\Tests\\": "packages/worker/tests/",
+            "KafkaBus\\Partitions\\Tests\\": "packages/partitions/tests/",
             "KafkaBus\\Workbench\\": "workbench/"
         }
     },

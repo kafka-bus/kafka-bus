@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PHP 8.2+ monorepo of three packages for integrating Apache Kafka into PHP applications via a consumer/producer pipeline architecture. Requires `ext-rdkafka`.
+PHP 8.2+ monorepo of five packages for integrating Apache Kafka into PHP applications via a consumer/producer pipeline architecture. Requires `ext-rdkafka`.
 
 ## Commands
 
@@ -40,21 +40,44 @@ Tests are discovered by Testo via `testo.php` at the repo root. There is no buil
 | `kafka-bus/core` | `packages/core/` | Bus orchestration, consumer/producer pipelines, Kafka connections, topic routing |
 | `kafka-bus/commiter` | `packages/commiter/` | Consumer offset commit middleware, producer idempotency middleware |
 | `kafka-bus/messages` | `packages/messages/` | Message DTOs, typed `Payload`, casters, `DomainMessage` base class |
+| `kafka-bus/worker` | `packages/worker/` | Kafka polling loop infrastructure (`Worker`, `WorkerRunner`) — reads raw messages and dispatches them to `Bus` |
+| `kafka-bus/partitions` | `packages/partitions/` | Partition/offset inspection and administration API (`Partitions`), independent of any consumer implementation |
 
-`commiter` and `messages` both depend on `core`. All three are versioned and released in sync via `monorepo-builder.php`.
+`commiter`, `messages` and `worker` depend on `core`; `worker` also depends on `partitions`. All five are versioned and released in sync via `monorepo-builder.php`.
 
 ## Architecture
 
+`Bus` is a single-connection facade: publishing and consuming both go through it and both have their own router (symmetric design — no separate "listener" subsystem bypassing `Bus`).
+
+- **Publish**: `Bus::publish()` → `Publisher` → `PublisherRouter` (message class → topic) → `PublisherStream`.
+- **Consume**: raw Kafka messages are handed to `Bus::dispatch()` → `Receiver` → `ReceiverRouter` (topic → handler) → `RouteExecutor` (message factory + middleware pipeline) → handler.
+
+Reading from Kafka is not `Bus`'s job — a `Worker` (from `kafka-bus/worker`) only knows which topics to poll; it reads raw messages and calls `$bus->dispatch()`, with zero knowledge of handlers or routing.
+
 ### Core Package (`packages/core/src/`)
 
-- **`Bus/`** — entry point (`Bus`), `ThreadRegistry`, `ListenerFactory`, `PublisherFactory`, `MessageBatch`
+- **`Bus.php`** — the single entry point; holds one `Publisher` and one `Receiver` for a single `ConnectionInterface`
+- **`Bus/Publishers/`** — `Publisher`, `PublisherFactory`, `Router/` (message class → topic)
+- **`Bus/Consumers/`** — `Receiver`, `ReceiverFactory` (topic → handler, wraps `ReceiverRouter`)
 - **`Connections/`** — `KafkaConnectionConfig` (SASL/SSL/plaintext), `KafkaConsumerFactory`, `KafkaProducerFactory`, `ConnectionRegistry`
-- **`Consumers/`** — `Consumer` (wraps rdkafka), `ConsumerRouter` (topic→handler), `ConsumerStream`, `MessageHandler`
-- **`Producers/`** — `Producer` (wraps rdkafka), `PublisherRouter` (message class→topic), `ProducerStream`, `ProducerPipelineMiddleware`
+- **`Consumers/`** — `Consumer` (wraps rdkafka), `Router/` (`ReceiverRouter`, `ConsumerRoutes`, `RouteExecutor`), `ConsumerStream` (generic poll-and-dispatch loop, connection/topics/dispatcher only — no `Worker` knowledge)
+- **`Producers/`** — `Producer` (wraps rdkafka), `PublisherStream`, `PublisherPipelineMiddleware`
 - **`Topics/`** — `TopicRegistry` and topic metadata
 - **`Pipelines/`** — middleware pattern for message processing
 - **`Interfaces/`** — public contracts: Bus, Consumer, Producer, Message
 - **`Testing/`** — test fakers and factories for use in other packages
+
+### Worker Package (`packages/worker/src/`)
+
+- `Worker` — name + topics + polling `Options` (no handlers, no middleware, no routing)
+- `WorkerRunner` / `WorkerRunnerFactory` — builds a raw consumer loop (via core's `ConsumerStreamFactory`) that dispatches every message straight into a `BusInterface`
+- `MemoryWorkerRegistry`, `WorkerMerger` — named workers and merging several workers into one poll loop
+- `WorkerRunner::partitions()` builds a `KafkaBus\Partitions\Partitions` (from `kafka-bus/partitions`) scoped to the worker's own topics
+
+### Partitions Package (`packages/partitions/src/`)
+
+- `Partitions` / `PartitionsInterface` — list partitions and their offsets for a given set of topics, and manually set consumer offsets (`CommitOffset`, `CommitOffsetResult`, `Offset`, `TopicPartition`)
+- Depends only on `core` (`ConnectionConsumerTopicsInterface`, `Topic`) — no knowledge of `Worker` or any specific consumer
 
 ### Messages Package (`packages/messages/src/`)
 
@@ -65,13 +88,13 @@ Tests are discovered by Testo via `testo.php` at the repo root. There is no buil
 
 ### Commiter Package (`packages/commiter/src/`)
 
-- `Middleware/` — `ConsumerCommiterMiddleware`, `ProducerIdempotencyMiddleware`
+- `Middleware/` — `ConsumerCommiterMiddleware`, `PublisherIdempotencyMiddleware`
 - `Repositories/` — `ArrayMessageRepository`, `NativeMessageRepository`, `IdempotencyMessageRepository`
 
 ## Code Style Constraints
 
 - All files: `declare(strict_types=1)`
-- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`
+- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`, `KafkaBus\Worker`, `KafkaBus\Partitions`
 - All native function calls must be fully qualified: `\json_encode()`, `\array_map()`, etc.
 - PHPStan level max — no ignored errors without explicit baseline
 - PHP-CS-Fixer enforces global namespace imports (no `use function`)

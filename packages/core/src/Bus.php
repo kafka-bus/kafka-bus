@@ -1,48 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace KafkaBus\Core;
 
-use KafkaBus\Core\Bus\Listeners\Listener;
-use KafkaBus\Core\Bus\MessageBatch;
-use KafkaBus\Core\Bus\ThreadRegistry;
-use KafkaBus\Core\Interfaces\Bus\BusInterface;
-use KafkaBus\Core\Interfaces\Bus\ThreadInterface;
-use KafkaBus\Core\Interfaces\Producers\Messages\ProducerMessageInterface;
+use KafkaBus\Core\Connections\ConnectionInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Producers\Messages\ProducerMessageInterface;
+use KafkaBus\Core\Publishers\MessageBatch;
+use KafkaBus\Core\Publishers\Publisher;
+use KafkaBus\Core\Publishers\PublisherFactory;
+use KafkaBus\Core\Receivers\Receiver;
+use KafkaBus\Core\Receivers\ReceiverInterface;
 
-final class Bus implements BusInterface
+final readonly class Bus implements BusInterface
 {
-    protected ThreadInterface $thread;
+    private Publisher $publisher;
 
     public function __construct(
-        protected ThreadRegistry $threadRegistry,
-        string                   $defaultConnection
+        private ConnectionInterface $connection,
+        PublisherFactory $publisherFactory = new PublisherFactory(),
+        private ReceiverInterface $receiver = new Receiver(),
     ) {
-        $this->thread = $this->threadRegistry->thread($defaultConnection);
+        $this->publisher = $publisherFactory->create($this->connection);
     }
 
-    public function onConnection(string $connectionName): ThreadInterface
+    public function connection(): ConnectionInterface
     {
-        return $this->threadRegistry
-            ->thread($connectionName);
+        return $this->connection;
     }
 
-    public function routes(): array
+    public function publisher(): Publisher
     {
-        return $this->thread->routes();
+        return $this->publisher;
     }
 
     public function publish(ProducerMessageInterface $message): void
     {
-        $this->thread->publish($message);
+        $this->publishBatch(MessageBatch::fromArray([$message]));
     }
 
     public function publishBatch(MessageBatch $messageBatch): void
     {
-        $this->thread->publishBatch($messageBatch);
+        $this->publisher
+            ->publish($messageBatch);
     }
 
-    public function listener(string|array $name): Listener
+    public function dispatch(ConsumerMessageInterface $message): void
     {
-        return $this->thread->listener($name);
+        $this->receiver
+            ->dispatch($message);
     }
 }
