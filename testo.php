@@ -12,7 +12,7 @@ return new ApplicationConfig(
                 'packages/commiter/tests',
                 'packages/messages/tests',
                 'packages/worker/tests',
-                'packages/partitions/tests',
+                'packages/metadata/tests',
             ],
         ),
     ],

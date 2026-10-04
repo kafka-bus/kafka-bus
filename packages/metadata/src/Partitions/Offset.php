@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace KafkaBus\Partitions;
+namespace KafkaBus\Metadata\Partitions;
 
 enum Offset
 {

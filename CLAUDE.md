@@ -41,9 +41,9 @@ Tests are discovered by Testo via `testo.php` at the repo root. There is no buil
 | `kafka-bus/commiter` | `packages/commiter/` | Consumer offset commit middleware, producer idempotency middleware |
 | `kafka-bus/messages` | `packages/messages/` | Message DTOs, typed `Payload`, casters, `DomainMessage` base class |
 | `kafka-bus/worker` | `packages/worker/` | Kafka polling loop infrastructure (`Worker`, `WorkerRunner`) — reads raw messages and dispatches them to `Bus` |
-| `kafka-bus/partitions` | `packages/partitions/` | Partition/offset inspection and administration API (`Partitions`), independent of any consumer implementation |
+| `kafka-bus/metadata` | `packages/metadata/` | Kafka cluster metadata: topics/partitions listing, consumer group offsets inspection and administration |
 
-`commiter`, `messages` and `worker` depend on `core`; `worker` also depends on `partitions`. All five are versioned and released in sync via `monorepo-builder.php`.
+`commiter`, `messages`, `worker` and `metadata` depend only on `core`. All five are versioned and released in sync via `monorepo-builder.php`.
 
 ## Architecture
 
@@ -72,12 +72,14 @@ Reading from Kafka is not `Bus`'s job — a `Worker` (from `kafka-bus/worker`) o
 - `Worker` — name + topics + polling `Options` (no handlers, no middleware, no routing)
 - `WorkerRunner` / `WorkerRunnerFactory` — builds a raw consumer loop (via core's `ConsumerStreamFactory`) that dispatches every message straight into a `BusInterface`
 - `MemoryWorkerRegistry`, `WorkerMerger` — named workers and merging several workers into one poll loop
-- `WorkerRunner::partitions()` builds a `KafkaBus\Partitions\Partitions` (from `kafka-bus/partitions`) scoped to the worker's own topics
 
-### Partitions Package (`packages/partitions/src/`)
+### Metadata Package (`packages/metadata/src/`)
 
-- `Partitions` / `PartitionsInterface` — list partitions and their offsets for a given set of topics, and manually set consumer offsets (`CommitOffset`, `CommitOffsetResult`, `Offset`, `TopicPartition`)
-- Depends only on `core` (`ConnectionConsumerTopicsInterface`, `Topic`) — no knowledge of `Worker` or any specific consumer
+- `Metadata` — entry point: `Metadata::fromConnection($connection)` (uses only the connection's `Options`) → `topics()`, `consumerGroup($config)`, `partitions($topics, $config, $ownerName)`
+- `Topics/` — `TopicsMetadata` (broker-wide `list()`/`get()`), `TopicMetadata`, `PartitionMetadata`
+- `ConsumerGroups/` — `ConsumerGroupMetadata` (committed offsets + watermarks per partition, raw `commit()`), `ConsumerPartition`, `PartitionOffset`
+- `Partitions/` — `Partitions` / `PartitionsInterface`: high-level API over a set of `Topic`s — list partitions with offsets and set consumer offsets with bounds validation (`CommitOffset`, `CommitOffsetResult`, `Offset`, `TopicPartition`)
+- Depends only on `core` — no knowledge of `Worker` or any specific consumer
 
 ### Messages Package (`packages/messages/src/`)
 
@@ -94,7 +96,7 @@ Reading from Kafka is not `Bus`'s job — a `Worker` (from `kafka-bus/worker`) o
 ## Code Style Constraints
 
 - All files: `declare(strict_types=1)`
-- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`, `KafkaBus\Worker`, `KafkaBus\Partitions`
+- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`, `KafkaBus\Worker`, `KafkaBus\Metadata`
 - All native function calls must be fully qualified: `\json_encode()`, `\array_map()`, etc.
-- PHPStan level max — no ignored errors without explicit baseline
+- PHPStan level max — no ignored errors without explicit baseline; missing type info for `ext-rdkafka` goes into `stubs/RdKafka.stub`
 - PHP-CS-Fixer enforces global namespace imports (no `use function`)

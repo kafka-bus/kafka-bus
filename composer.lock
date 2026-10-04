@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "22293457df95d5ff9248f74a59009af2",
+    "content-hash": "116e5dfd36150565890d5dabaed8c74f",
     "packages": [
         {
             "name": "kafka-bus/commiter",
@@ -54,11 +54,14 @@
             "dist": {
                 "type": "path",
                 "url": "packages/core",
-                "reference": "9a8e4b003a60d2d36df265c7da08b4008fcea971"
+                "reference": "1e4a2e342cb2a88f0b48fdc5d12a0acba0b9b4cb"
             },
             "require": {
                 "ext-rdkafka": "*",
                 "php": "^8.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^11.5"
             },
             "type": "library",
             "autoload": {
@@ -134,12 +137,12 @@
             }
         },
         {
-            "name": "kafka-bus/partitions",
+            "name": "kafka-bus/metadata",
             "version": "1.x-dev",
             "dist": {
                 "type": "path",
-                "url": "packages/partitions",
-                "reference": "1ea53a11c86d14da0732d7a8dc4f5751569c6ad8"
+                "url": "packages/metadata",
+                "reference": "7b63432bb810d847c97cef3c58eb42a23ee77952"
             },
             "require": {
                 "ext-rdkafka": "*",
@@ -149,7 +152,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "KafkaBus\\Partitions\\": "src/"
+                    "KafkaBus\\Metadata\\": "src/"
                 }
             },
             "license": [
@@ -162,12 +165,13 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Partition and offset inspection/administration API for Kafka Bus",
-            "homepage": "https://github.com/kafka-bus/partitions",
+            "description": "Kafka cluster metadata for Kafka Bus: topics, partitions, consumer group offsets inspection and administration",
+            "homepage": "https://github.com/kafka-bus/metadata",
             "keywords": [
                 "Apache Kafka",
                 "kafka",
                 "kafka-bus",
+                "metadata",
                 "offsets",
                 "partitions"
             ],
@@ -6164,7 +6168,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.2",
+        "ext-rdkafka": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

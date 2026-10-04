@@ -21,6 +21,8 @@ jobs:
           - core
           - commiter
           - messages
+          - metadata
+          - worker
 
     steps:
       - name: Checkout

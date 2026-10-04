@@ -1,0 +1,14 @@
+<?php
+
+namespace RdKafka;
+
+class KafkaConsumer
+{
+    /**
+     * @param-out int $low
+     * @param-out int $high
+     */
+    public function queryWatermarkOffsets(string $topic, int $partition, int &$low, int &$high, int $timeout_ms): void
+    {
+    }
+}

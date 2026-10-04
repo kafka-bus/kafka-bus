@@ -2,15 +2,19 @@ parameters:
     level: max
 
     paths:
+        - examples/
         - packages/core/src
         - packages/commiter/src
         - packages/messages/src
         - packages/worker/src
-        - packages/partitions/src
+        - packages/metadata/src
 
     # Все пакеты видят vendor/ монорепо через path-repositories
     bootstrapFiles:
         - vendor/autoload.php
+
+    stubFiles:
+        - stubs/RdKafka.stub
 
     # Суммарный baseline — чтобы не захламлять per-package файлы
     # Генерируется: vendor/bin/phpstan analyse --generate-baseline

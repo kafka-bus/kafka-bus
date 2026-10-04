@@ -1,19 +1,20 @@
 <?php
 
 
-use KafkaBus\Core\Connections\KafkaConnection;
 use KafkaBus\Core\Connections\Registry\ConnectionRegistryInterface;
+use KafkaBus\Core\Topics\TopicRegistry;
+use KafkaBus\Metadata\Metadata;
 
 require '../vendor/autoload.php';
 
 /** @var ConnectionRegistryInterface $connectionRegistry */
+/** @var TopicRegistry $topicRegistry */
 require 'bus.php';
 
-/** @var KafkaConnection $connection */
-$connection = $connectionRegistry->connection('default');
+$metadata = Metadata::fromConnection($connectionRegistry->connection('default'));
 
-foreach ($connection->topics()->list() as $topic) {
+foreach ($metadata->topics()->list($topicRegistry->all()) as $topic) {
     foreach ($topic->partitions as $partition) {
-        echo "$topic->topicName#$partition->id [$partition->offset]\n";
+        echo "$topic->name#$partition->id [$partition->offset]\n";
     }
 }

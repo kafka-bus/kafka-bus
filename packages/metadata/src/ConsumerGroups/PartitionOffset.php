@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace KafkaBus\Core\Connections\Topics\Consumers;
+namespace KafkaBus\Metadata\ConsumerGroups;
 
 final readonly class PartitionOffset
 {

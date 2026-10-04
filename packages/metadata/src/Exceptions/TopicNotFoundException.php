@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace KafkaBus\Core\Exceptions;
+namespace KafkaBus\Metadata\Exceptions;
 
 use Exception;
 

@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace KafkaBus\Partitions\Interfaces;
+namespace KafkaBus\Metadata\Partitions;
 
-use KafkaBus\Partitions\CommitOffset;
-use KafkaBus\Partitions\CommitOffsetResult;
-use KafkaBus\Partitions\Exceptions\CannotCommitOffsetException;
-use KafkaBus\Partitions\TopicPartition;
+use KafkaBus\Metadata\Exceptions\CannotCommitOffsetException;
 
 interface PartitionsInterface
 {
@@ -17,7 +14,6 @@ interface PartitionsInterface
     public function list(): iterable;
 
     /**
-     * @param CommitOffset $commitOffset
      * @return list<CommitOffsetResult>
      *
      * @throws CannotCommitOffsetException

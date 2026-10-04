@@ -1,12 +1,11 @@
 <?php
 
-use KafkaBus\Core\Connections\KafkaConnection;
 use KafkaBus\Core\Connections\Registry\ConnectionRegistryInterface;
 use KafkaBus\Core\Consumers\ConsumerConfig;
 use KafkaBus\Core\Topics\TopicRegistry;
-use KafkaBus\Partitions\CommitOffset;
-use KafkaBus\Partitions\Offset;
-use KafkaBus\Partitions\Partitions;
+use KafkaBus\Metadata\Metadata;
+use KafkaBus\Metadata\Partitions\CommitOffset;
+use KafkaBus\Metadata\Partitions\Offset;
 
 require '../vendor/autoload.php';
 
@@ -16,13 +15,8 @@ require 'bus.php';
 
 $topic = $topicRegistry->get('products');
 
-/** @var KafkaConnection $connection */
-$connection = $connectionRegistry->connection('default');
-
-$consumerTopics = $connection->topics()
-    ->consume(new ConsumerConfig(additionalOptions: ['group.id' => 'products-microservice']));
-
-$partitions = new Partitions([$topic], 'products-microservice', $consumerTopics);
+$partitions = Metadata::fromConnection($connectionRegistry->connection('default'))
+    ->partitions([$topic], new ConsumerConfig(additionalOptions: ['group.id' => 'products-microservice']));
 
 $results = $partitions->setOffset(new CommitOffset($topic, 0, Offset::Early));
 

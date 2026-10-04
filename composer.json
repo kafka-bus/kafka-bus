@@ -11,11 +11,12 @@
     ],
     "require": {
         "php": "^8.2",
+        "ext-rdkafka": "*",
         "kafka-bus/core": "*",
         "kafka-bus/commiter": "*",
         "kafka-bus/messages": "*",
         "kafka-bus/worker": "*",
-        "kafka-bus/partitions": "*"
+        "kafka-bus/metadata": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
@@ -32,7 +33,7 @@
         {"type": "path", "url": "packages/commiter"},
         {"type": "path", "url": "packages/messages"},
         {"type": "path", "url": "packages/worker"},
-        {"type": "path", "url": "packages/partitions"}
+        {"type": "path", "url": "packages/metadata"}
     ],
     "autoload-dev": {
         "psr-4": {
@@ -40,7 +41,7 @@
             "KafkaBus\\Messages\\Tests\\": "packages/messages/tests/",
             "KafkaBus\\Core\\Tests\\": "packages/core/tests/",
             "KafkaBus\\Worker\\Tests\\": "packages/worker/tests/",
-            "KafkaBus\\Partitions\\Tests\\": "packages/partitions/tests/",
+            "KafkaBus\\Metadata\\Tests\\": "packages/metadata/tests/",
             "KafkaBus\\Workbench\\": "workbench/"
         }
     },

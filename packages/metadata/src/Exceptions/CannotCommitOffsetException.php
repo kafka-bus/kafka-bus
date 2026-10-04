@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace KafkaBus\Partitions\Exceptions;
+namespace KafkaBus\Metadata\Exceptions;
 
 use LogicException;
 
