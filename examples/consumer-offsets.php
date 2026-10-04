@@ -1,22 +1,31 @@
 <?php
 
-use KafkaBus\Core\Bus\Listeners\Partitions\CommitOffset;
-use KafkaBus\Core\Bus\Listeners\Partitions\Offset;
-use KafkaBus\Core\BusInterface;
+use KafkaBus\Core\Connections\KafkaConnection;
+use KafkaBus\Core\Connections\Registry\ConnectionRegistryInterface;
+use KafkaBus\Core\Consumers\ConsumerConfig;
 use KafkaBus\Core\Topics\TopicRegistry;
+use KafkaBus\Partitions\CommitOffset;
+use KafkaBus\Partitions\Offset;
+use KafkaBus\Partitions\Partitions;
 
 require '../vendor/autoload.php';
 
-/** @var BusInterface $bus */
+/** @var ConnectionRegistryInterface $connectionRegistry */
 /** @var TopicRegistry $topicRegistry */
 require 'bus.php';
 
-$commitOffset = new CommitOffset($topicRegistry->get('products'), 0, Offset::Early);
+$topic = $topicRegistry->get('products');
 
-$partitions = $bus->listener('default-listener')
-    ->partitions()
-    ->setOffset($commitOffset);
+/** @var KafkaConnection $connection */
+$connection = $connectionRegistry->connection('default');
 
-foreach ($partitions as $partition) {
-    echo "{$partition->topic->name}#$partition->partition O:$partition->oldOffset N:$partition->newOffset\n";
+$consumerTopics = $connection->topics()
+    ->consume(new ConsumerConfig(additionalOptions: ['group.id' => 'products-microservice']));
+
+$partitions = new Partitions([$topic], 'products-microservice', $consumerTopics);
+
+$results = $partitions->setOffset(new CommitOffset($topic, 0, Offset::Early));
+
+foreach ($results as $result) {
+    echo "{$result->topic->name}#$result->partition O:$result->oldOffset N:$result->newOffset\n";
 }

@@ -1,16 +1,27 @@
 <?php
 
-use KafkaBus\Core\BusInterface;
+use KafkaBus\Core\Connections\KafkaConnection;
+use KafkaBus\Core\Connections\Registry\ConnectionRegistryInterface;
+use KafkaBus\Core\Consumers\ConsumerConfig;
+use KafkaBus\Core\Topics\TopicRegistry;
+use KafkaBus\Partitions\Partitions;
 
 require '../vendor/autoload.php';
 
-/** @var BusInterface $bus */
+/** @var ConnectionRegistryInterface $connectionRegistry */
+/** @var TopicRegistry $topicRegistry */
 require 'bus.php';
 
-$partitions = $bus->listener('default-listener')
-    ->partitions()
-    ->list();
+$topic = $topicRegistry->get('products');
 
-foreach ($partitions as $partition) {
+/** @var KafkaConnection $connection */
+$connection = $connectionRegistry->connection('default');
+
+$consumerTopics = $connection->topics()
+    ->consume(new ConsumerConfig(additionalOptions: ['group.id' => 'products-microservice']));
+
+$partitions = new Partitions([$topic], 'products-microservice', $consumerTopics);
+
+foreach ($partitions->list() as $partition) {
     echo "{$partition->topic->name}#$partition->id C:$partition->currentOffset MIN:$partition->minOffset MAX:$partition->maxOffset\n";
 }
