@@ -20,7 +20,9 @@
     ],
     "require": {
         "php": "^8.2",
-        "kafka-bus/core": "*"
+        "ext-rdkafka": "*",
+        "kafka-bus/core": "*",
+        "psr/log": "^1.1|^2.0|^3.0"
     },
     "autoload": {
         "psr-4": {

@@ -1,0 +1,17 @@
+# Что не попадает в архив (dist) при установке через Composer: kafka-bus/kafka-bus ставится целиком из корня.
+/.github          export-ignore
+/.idea            export-ignore
+/benchmarks       export-ignore
+/examples         export-ignore
+/stubs            export-ignore
+/workbench        export-ignore
+/packages/*/tests export-ignore
+/.dockerignore    export-ignore
+/.gitattributes   export-ignore
+/.gitignore       export-ignore
+/.php-cs-fixer.php export-ignore
+/CLAUDE.md        export-ignore
+/monorepo-builder.php export-ignore
+/phpbench.json    export-ignore
+/phpstan.neon     export-ignore
+/testo.php        export-ignore

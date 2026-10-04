@@ -9,3 +9,8 @@
 /phpstan.cache
 *.log
 .DS_Store
+
+/benchmarks/results/*
+!/benchmarks/results/.gitkeep
+
+composer.lock

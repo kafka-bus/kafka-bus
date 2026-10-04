@@ -1,6 +1,6 @@
 {
     "name": "kafka-bus/kafka-bus",
-    "description": "Monorepo for kafka-bus core packages",
+    "description": "Kafka Bus: core, commiter, messages, worker and metadata in one package",
     "license": "MIT",
     "authors": [
         {
@@ -12,15 +12,20 @@
     "require": {
         "php": "^8.2",
         "ext-rdkafka": "*",
-        "kafka-bus/core": "*",
-        "kafka-bus/commiter": "*",
-        "kafka-bus/messages": "*",
-        "kafka-bus/worker": "*",
-        "kafka-bus/metadata": "*"
+        "psr/log": "^1.1|^2.0|^3.0",
+        "webmozart/assert": "^1.11|^2.0"
+    },
+    "replace": {
+        "kafka-bus/commiter": "self.version",
+        "kafka-bus/core": "self.version",
+        "kafka-bus/messages": "self.version",
+        "kafka-bus/metadata": "self.version",
+        "kafka-bus/worker": "self.version"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
         "friendsofphp/php-cs-fixer": "^3.64",
+        "phpbench/phpbench": "^1.7",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^11.5",
@@ -28,13 +33,15 @@
         "testo/assert": "^0.1.6",
         "testo/testo": "^0.10.23"
     },
-    "repositories": [
-        {"type": "path", "url": "packages/core"},
-        {"type": "path", "url": "packages/commiter"},
-        {"type": "path", "url": "packages/messages"},
-        {"type": "path", "url": "packages/worker"},
-        {"type": "path", "url": "packages/metadata"}
-    ],
+    "autoload": {
+        "psr-4": {
+            "KafkaBus\\Core\\": "packages/core/src/",
+            "KafkaBus\\Commiter\\": "packages/commiter/src/",
+            "KafkaBus\\Messages\\": "packages/messages/src/",
+            "KafkaBus\\Worker\\": "packages/worker/src/",
+            "KafkaBus\\Metadata\\": "packages/metadata/src/"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "KafkaBus\\Commiter\\Tests\\": "packages/commiter/tests/",
@@ -42,7 +49,8 @@
             "KafkaBus\\Core\\Tests\\": "packages/core/tests/",
             "KafkaBus\\Worker\\Tests\\": "packages/worker/tests/",
             "KafkaBus\\Metadata\\Tests\\": "packages/metadata/tests/",
-            "KafkaBus\\Workbench\\": "workbench/"
+            "KafkaBus\\Workbench\\": "workbench/",
+            "KafkaBus\\Benchmarks\\": "benchmarks/"
         }
     },
     "scripts": {
@@ -50,8 +58,9 @@
         "test-ci": "vendor/bin/testo",
         "analyse": "vendor/bin/phpstan analyse --configuration phpstan.neon",
         "format": "vendor/bin/php-cs-fixer fix --config .php-cs-fixer.php",
-        "validate:monorepo":"vendor/bin/monorepo-builder validate",
-        "release": "vendor/bin/monorepo-builder release"
+        "validate:monorepo": "vendor/bin/monorepo-builder validate",
+        "bench": "vendor/bin/phpbench run --report=kafka-bus",
+        "bench:docker": "docker compose -f benchmarks/compose.yml run --rm --build bench"
     },
     "config": {
         "sort-packages": true,

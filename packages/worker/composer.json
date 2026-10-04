@@ -19,6 +19,7 @@
     ],
     "require": {
         "php": "^8.2",
+        "ext-rdkafka": "*",
         "kafka-bus/core": "*"
     },
     "autoload": {
