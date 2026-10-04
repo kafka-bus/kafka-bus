@@ -1,0 +1,9 @@
+.git
+.idea
+.vscode
+vendor
+packages/*/vendor
+.php-cs-fixer.cache
+.phpunit.cache
+phpstan.cache
+benchmarks/results

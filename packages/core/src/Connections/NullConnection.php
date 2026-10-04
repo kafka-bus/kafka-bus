@@ -4,12 +4,11 @@ namespace KafkaBus\Core\Connections;
 
 use KafkaBus\Core\Connections\Config\Options;
 use KafkaBus\Core\Consumers\ConsumerConfig;
+use KafkaBus\Core\Consumers\ConsumerInterface;
 use KafkaBus\Core\Exceptions\Consumers\ConsumerException;
-use KafkaBus\Core\Interfaces\Connections\ConnectionInterface;
-use KafkaBus\Core\Interfaces\Consumers\ConsumerInterface;
-use KafkaBus\Core\Interfaces\Producers\ProducerInterface;
 use KafkaBus\Core\Producers\NullProducer;
 use KafkaBus\Core\Producers\ProducerConfig;
+use KafkaBus\Core\Producers\ProducerInterface;
 use KafkaBus\Core\Topics\Topic;
 
 final class NullConnection implements ConnectionInterface
@@ -39,7 +38,7 @@ final class NullConnection implements ConnectionInterface
     /**
      * @throws ConsumerException
      */
-    public function createConsumer(array $topics, ConsumerConfig $config): ConsumerInterface
+    public function createConsumer(ConsumerConfig $config): ConsumerInterface
     {
         throw new ConsumerException('Cannot create consumer for null connection');
     }

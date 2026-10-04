@@ -3,7 +3,7 @@
 namespace KafkaBus\Core\Exceptions\Consumers;
 
 use Exception;
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use Throwable;
 
 class MessageConsumerNotHandledException extends Exception

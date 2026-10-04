@@ -1,0 +1,14 @@
+# Запуск:  docker compose -f benchmarks/compose.yml run --rm --build bench [--group=consume] [--filter=benchDispatchRaw]
+#
+# Ограничения ресурсов фиксируют окружение, чтобы замеры были сравнимы между запусками.
+# Kafka здесь не поднимается: бенчи на реальном брокере проводятся на готовом приложении.
+services:
+  bench:
+    build:
+      context: ..
+      dockerfile: benchmarks/Dockerfile
+    cpus: 1
+    cpuset: "0" # закрепление за ядром: без миграций между ядрами меньше разброс на субмикросекундных замерах
+    mem_limit: 512m
+    volumes:
+      - ./results:/app/benchmarks/results

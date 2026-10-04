@@ -11,6 +11,8 @@ return new ApplicationConfig(
                 'packages/core/tests',
                 'packages/commiter/tests',
                 'packages/messages/tests',
+                'packages/worker/tests',
+                'packages/metadata/tests',
             ],
         ),
     ],

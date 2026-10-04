@@ -1,8 +1,8 @@
 <?php
 
 
-use KafkaBus\Core\Bus\MessageBatch;
-use KafkaBus\Core\Interfaces\Bus\BusInterface;
+use KafkaBus\Core\BusInterface;
+use KafkaBus\Core\Publishers\MessageBatch;
 use KafkaBus\Core\Testing\Messages\ProducerMessageFaker;
 
 require '../vendor/autoload.php';

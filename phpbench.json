@@ -1,0 +1,20 @@
+{
+    "$schema": "./vendor/phpbench/phpbench/phpbench.schema.json",
+    "runner.bootstrap": "vendor/autoload.php",
+    "runner.path": "benchmarks",
+    "runner.file_pattern": "*Bench.php",
+    "runner.php_config": {
+        "xdebug.mode": "off",
+        "memory_limit": "-1"
+    },
+    "runner.progress": "dots",
+    "runner.retry_threshold": 5,
+    "report.generators": {
+        "kafka-bus": {
+            "extends": "aggregate",
+            "title": "kafka-bus (Kafka замокана; время — на один вызов метода)",
+            "cols": ["benchmark", "subject", "revs", "its", "mem_peak", "mode", "mean", "best", "worst", "rstdev"],
+            "break": ["benchmark"]
+        }
+    }
+}

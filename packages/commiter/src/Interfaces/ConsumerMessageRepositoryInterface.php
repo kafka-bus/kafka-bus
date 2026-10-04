@@ -2,8 +2,8 @@
 
 namespace KafkaBus\Commiter\Interfaces;
 
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Commiter\Attempt;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 
 interface ConsumerMessageRepositoryInterface
 {

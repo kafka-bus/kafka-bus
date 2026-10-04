@@ -2,10 +2,10 @@
 
 namespace KafkaBus\Core\Testing;
 
-use KafkaBus\Core\Interfaces\Producers\ProducerInterface;
+use KafkaBus\Core\Producers\ProducerInterface;
 use KafkaBus\Core\Testing\Connections\ConnectionFaker;
 
-class ProducerFaker implements ProducerInterface
+final readonly class ProducerFaker implements ProducerInterface
 {
     public function __construct(
         protected ConnectionFaker $connection,

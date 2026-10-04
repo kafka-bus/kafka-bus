@@ -13,6 +13,8 @@
 | `kafka-bus/core`     | `packages/core`     | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/core.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/core)         |
 | `kafka-bus/commiter` | `packages/commiter` | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/commiter.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/commiter) |
 | `kafka-bus/messages` | `packages/messages` | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/messages.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/messages) |
+| `kafka-bus/worker`   | `packages/worker`   | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/worker.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/worker)     |
+| `kafka-bus/metadata` | `packages/metadata` | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/metadata.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/metadata) |
 
 > Laravel- и Spiral-интеграции живут в отдельных репозиториях — у них свой цикл версионирования.
 
@@ -21,7 +23,7 @@
 ## Локальная разработка
 
 ```bash
-# Установить все зависимости (path-repositories создадут symlinks)
+# Установить все зависимости (корневой пакет подключает packages/*/src автозагрузкой)
 composer install
 
 # Запуск тестов

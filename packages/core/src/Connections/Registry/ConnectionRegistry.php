@@ -3,9 +3,8 @@
 namespace KafkaBus\Core\Connections\Registry;
 
 use KafkaBus\Core\Connections\Config;
-use KafkaBus\Core\Interfaces\Connections\ConnectionConfigInterface;
-use KafkaBus\Core\Interfaces\Connections\ConnectionInterface;
-use KafkaBus\Core\Interfaces\Connections\ConnectionRegistryInterface;
+use KafkaBus\Core\Connections\Config\ConnectionConfigInterface;
+use KafkaBus\Core\Connections\ConnectionInterface;
 use KafkaBus\Core\Exceptions\Connections\ConnectionException;
 
 class ConnectionRegistry implements ConnectionRegistryInterface

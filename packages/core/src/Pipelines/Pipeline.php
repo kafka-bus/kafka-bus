@@ -3,9 +3,6 @@
 namespace KafkaBus\Core\Pipelines;
 
 use LogicException;
-use KafkaBus\Core\Interfaces\Pipelines\PipelineHandlerInterface;
-use KafkaBus\Core\Interfaces\Pipelines\PipelineInterface;
-use KafkaBus\Core\Interfaces\Pipelines\PipelineMiddlewareInterface;
 
 /**
  * @template TResult

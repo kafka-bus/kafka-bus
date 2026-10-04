@@ -1,0 +1,34 @@
+name: validate-composer
+
+on:
+  push:
+    paths:
+      - '**/composer.json'
+      - 'monorepo-builder.php'
+      - '.github/workflows/validate-composer.yml'
+
+jobs:
+  validate:
+    name: validate composer
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: rdkafka
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v4
+
+      # корневой composer.json валиден
+      - name: Validate root composer.json
+        run: composer validate --no-check-publish
+
+      # одна и та же зависимость не указана с разными ограничениями в корне и пакетах
+      - name: Validate monorepo
+        run: composer validate:monorepo

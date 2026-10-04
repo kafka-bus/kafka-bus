@@ -2,8 +2,8 @@
 
 namespace KafkaBus\Messages\Factories;
 
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
-use KafkaBus\Core\Interfaces\Consumers\Messages\MessageFactoryInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
 use KafkaBus\Messages\JsonMessage;
 
 /**

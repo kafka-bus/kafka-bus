@@ -2,7 +2,6 @@
 
 namespace KafkaBus\Core\Consumers\Messages;
 
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
 use RdKafka\Message;
 
 final class ConsumerMessage implements ConsumerMessageInterface

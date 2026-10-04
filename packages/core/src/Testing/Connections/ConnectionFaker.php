@@ -3,14 +3,14 @@
 namespace KafkaBus\Core\Testing\Connections;
 
 use KafkaBus\Core\Connections\Config\Options;
+use KafkaBus\Core\Connections\ConnectionInterface;
 use KafkaBus\Core\Consumers\ConsumerConfig;
+use KafkaBus\Core\Consumers\ConsumerInterface;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageConverter;
-use KafkaBus\Core\Interfaces\Connections\ConnectionInterface;
-use KafkaBus\Core\Interfaces\Consumers\ConsumerInterface;
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
-use KafkaBus\Core\Interfaces\Producers\ProducerInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Producers\Messages\ProducerMessage;
 use KafkaBus\Core\Producers\ProducerConfig;
+use KafkaBus\Core\Producers\ProducerInterface;
 use KafkaBus\Core\Testing\ConsumerFaker;
 use KafkaBus\Core\Testing\ProducerFaker;
 use KafkaBus\Core\Topics\Topic;
@@ -68,7 +68,7 @@ class ConnectionFaker implements ConnectionInterface
         return new ProducerFaker($this, $topic->name);
     }
 
-    public function createConsumer(array $topics, ConsumerConfig $config): ConsumerInterface
+    public function createConsumer(ConsumerConfig $config): ConsumerInterface
     {
         return new ConsumerFaker($this, new ConsumerMessageConverter(), $this->consumeMessages);
     }

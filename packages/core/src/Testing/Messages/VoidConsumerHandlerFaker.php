@@ -2,7 +2,7 @@
 
 namespace KafkaBus\Core\Testing\Messages;
 
-use KafkaBus\Core\Interfaces\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 
 final class VoidConsumerHandlerFaker
 {

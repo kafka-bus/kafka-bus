@@ -1,9 +1,9 @@
 <?php
 
 
-use KafkaBus\Core\Connections\KafkaConnection;
-use KafkaBus\Core\Interfaces\Connections\ConnectionRegistryInterface;
+use KafkaBus\Core\Connections\Registry\ConnectionRegistryInterface;
 use KafkaBus\Core\Topics\TopicRegistry;
+use KafkaBus\Metadata\Metadata;
 
 require '../vendor/autoload.php';
 
@@ -11,12 +11,10 @@ require '../vendor/autoload.php';
 /** @var TopicRegistry $topicRegistry */
 require 'bus.php';
 
-/** @var KafkaConnection $connection */
-$connection = $connectionRegistry->connection('default');
-$topics = $connection->topics();
+$metadata = Metadata::fromConnection($connectionRegistry->connection('default'));
 
-foreach ($topics->list() as $topic) {
+foreach ($metadata->topics()->list($topicRegistry->all()) as $topic) {
     foreach ($topic->partitions as $partition) {
-        echo "$topic->topicName#$partition->id [$partition->offset]\n";
+        echo "$topic->name#$partition->id [$partition->offset]\n";
     }
 }

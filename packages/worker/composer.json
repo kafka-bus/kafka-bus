@@ -1,0 +1,38 @@
+{
+    "name": "kafka-bus/worker",
+    "description": "Kafka polling worker infrastructure for Kafka Bus — reads messages from Kafka and dispatches them to the Bus",
+    "keywords": [
+        "kafka",
+        "kafka-bus",
+        "Apache Kafka",
+        "worker",
+        "consumer"
+    ],
+    "homepage": "https://github.com/kafka-bus/worker",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kirill Popkov",
+            "email": "kirill.popkov.work@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-rdkafka": "*",
+        "kafka-bus/core": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KafkaBus\\Worker\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

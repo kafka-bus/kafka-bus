@@ -2,8 +2,8 @@
 
 namespace KafkaBus\Messages;
 
-use KafkaBus\Core\Interfaces\Producers\Messages\HasKey;
-use KafkaBus\Core\Interfaces\Producers\Messages\ProducerMessageInterface;
+use KafkaBus\Core\Producers\Messages\HasKey;
+use KafkaBus\Core\Producers\Messages\ProducerMessageInterface;
 use KafkaBus\Messages\Data\Payload;
 
 abstract class DomainMessage extends Payload implements HasKey, ProducerMessageInterface
