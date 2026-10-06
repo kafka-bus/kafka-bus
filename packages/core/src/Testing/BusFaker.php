@@ -7,6 +7,7 @@ namespace KafkaBus\Core\Testing;
 use KafkaBus\Core\Bus;
 use KafkaBus\Core\BusInterface;
 use KafkaBus\Core\Connections\ConnectionInterface;
+use KafkaBus\Core\Consumers\Messages\ConsumerMessage;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Producers\Messages\ProducerMessage;
 use KafkaBus\Core\Producers\Messages\ProducerMessageInterface;
@@ -37,7 +38,7 @@ final class BusFaker implements BusInterface
         PublisherFactory $publisherFactory = new PublisherFactory(),
         ReceiverInterface $receiver = new Receiver(),
     ): self {
-        $connectionFaker = new ConnectionFaker($topicRegistry);
+        $connectionFaker = new ConnectionFaker();
         $receiverFaker = new ReceiverFaker($receiver);
 
         return new self(
@@ -66,11 +67,17 @@ final class BusFaker implements BusInterface
 
     public function dispatch(ConsumerMessageInterface $message): void
     {
-        $this->bus->dispatch($message);
+        $newMessage = $message->original();
+        $newMessage->topic_name = $this->topicRegistry->tryGetTopicName($message->topicName());
+
+        $this->bus->dispatch(new ConsumerMessage($newMessage));
     }
 
     public function addMessage(Message $message): void
     {
+        $message->topic_name = $this->topicRegistry
+            ->tryGetTopicName($message->topic_name);
+
         $this->connectionFaker->addMessage($message);
     }
 
