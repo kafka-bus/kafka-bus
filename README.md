@@ -20,6 +20,41 @@
 
 ---
 
+## Архитектура
+
+`Bus` — единая точка входа: и публикация, и приём сообщений проходят через него, у каждого направления свой роутер. Чтение из Kafka — не задача `Bus`: `Worker` только поллит топики и передаёт сырые сообщения в `Bus::dispatch()`.
+
+```mermaid
+flowchart LR
+    M["Message"]
+    K1[("Apache Kafka")]
+    W["Worker<br/>(poll)"]
+    H["Handler"]
+    K2[("Apache Kafka")]
+
+    subgraph BUS["Kafka Bus"]
+        direction LR
+        subgraph PUB["publish"]
+            direction LR
+            P["Bus::publish()"] --> PR["PublisherRouter<br/>класс сообщения → топик"]
+        end
+        subgraph CON["dispatch"]
+            direction LR
+            D["Bus::dispatch()"] --> RR["ReceiverRouter<br/>топик → handler"]
+        end
+    end
+
+    M -->|"1. produce"| P
+    PR --> K1
+    K2 --> W
+    W -->|"2. consume"| D
+    RR --> H
+```
+
+Это два независимых процесса (обычно — разные процессы ОС), но оба проходят через один и тот же `Bus`. Apache Kafka на схеме показан дважды только для читаемости — это один и тот же кластер.
+
+---
+
 ## Локальная разработка
 
 ```bash
