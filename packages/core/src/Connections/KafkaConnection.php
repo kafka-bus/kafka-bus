@@ -65,7 +65,7 @@ class KafkaConnection implements
         return new Consumer(
             consumer: $consumer,
             topicNames: array_column($topics, 'name'),
-            commiter: $config->autoCommit ?  new VoidCommiter() : new DefaultCommiter($consumer),
+            commiter: $config->autoCommit ? new VoidCommiter() : new DefaultCommiter($consumer),
             retryRepeater: new RetryRepeater(),
             consumerTimeout: $config->consumerTimeout,
         );
