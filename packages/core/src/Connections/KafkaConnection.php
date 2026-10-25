@@ -58,7 +58,7 @@ final readonly class KafkaConnection implements ConnectionInterface
 
         return new Consumer(
             consumer: $consumer,
-            commiter: $config->autoCommit ? new DefaultCommiter($consumer) : new VoidCommiter(),
+            commiter: $config->autoCommit ? new VoidCommiter() : new DefaultCommiter($consumer),
             retryRepeater: new RetryRepeater(),
             consumerTimeout: $config->consumerTimeout,
         );
