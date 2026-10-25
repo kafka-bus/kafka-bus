@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.1.1 - 2026-10-25
+
+### What's Changed
+
+* fix: Исправлена ошибка, когда отключен автокоммит сообщения by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/11
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.1.0...v2.1.1
+
 ## v2.1.0 - 2026-10-06
 
 ### What's Changed
