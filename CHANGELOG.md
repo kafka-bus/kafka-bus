@@ -2,6 +2,10 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.1.2 - 2026-11-09
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.1.1...v2.1.2
+
 ## v2.1.1 - 2026-10-25
 
 ### What's Changed
