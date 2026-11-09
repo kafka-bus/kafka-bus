@@ -42,7 +42,7 @@ class Producer implements ProducerInterface
             headers: $producerMessage->headers
         );
 
-        $this->producer->poll($this->timeout);
+        $this->producer->poll(0);
     }
 
     private function flush(): void
