@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace KafkaBus\Core\Receivers\Routing;
 
-use Closure;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
 use KafkaBus\Core\Receivers\Messages\NativeMessageFactory;
@@ -13,8 +12,12 @@ final readonly class HandlerExecutor
 {
     private HandlerMetadata $metadata;
 
+    /**
+     * @param callable $handler
+     * @param MessageFactoryInterface $factory
+     */
     public function __construct(
-        private Closure $handler,
+        public mixed $handler,
         private MessageFactoryInterface $factory
     ) {
         $this->metadata = HandlerMetadata::fromHandler($this->handler);
@@ -22,12 +25,10 @@ final readonly class HandlerExecutor
 
     public static function fromHandler(callable $handler, ?MessageFactoryInterface $factory = null): self
     {
-        $callback = $handler(...);
-
-        $factory ??= (new MessageFactoryExtractor())->extract(\is_object($handler) ? $handler : $callback)
+        $factory ??= (new MessageFactoryExtractor())->extract($handler)
             ?? new NativeMessageFactory();
 
-        return new self($callback, $factory);
+        return new self($handler, $factory);
     }
 
     public function execute(mixed $message, ConsumerMessageInterface $record): void
