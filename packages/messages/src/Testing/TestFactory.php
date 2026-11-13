@@ -20,11 +20,17 @@ abstract class TestFactory
 
     protected string $topicKey = 'test';
 
+    /**
+     * @var array<string, string>
+     */
+    protected array $headers = [];
+
     final public function __construct(
         protected Generator $faker,
     ) {
         $this->messageFactory = (new MessageFactory())
-            ->withTopicKey($this->topicKey);
+            ->withTopicKey($this->topicKey)
+            ->withHeaders($this->headers);
     }
 
     /**
