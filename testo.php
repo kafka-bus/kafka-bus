@@ -13,6 +13,7 @@ return new ApplicationConfig(
                 'packages/messages/tests',
                 'packages/worker/tests',
                 'packages/metadata/tests',
+                'packages/typed-topics/tests',
             ],
         ),
     ],

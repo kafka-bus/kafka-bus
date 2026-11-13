@@ -9,6 +9,7 @@ parameters:
         - packages/messages/src
         - packages/worker/src
         - packages/metadata/src
+        - packages/typed-topics/src
 
     # Все пакеты видят vendor/ монорепо через path-repositories
     bootstrapFiles:

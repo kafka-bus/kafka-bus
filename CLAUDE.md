@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PHP 8.2+ monorepo of five packages for integrating Apache Kafka into PHP applications via a consumer/producer pipeline architecture. Requires `ext-rdkafka`.
+PHP 8.2+ monorepo of six packages for integrating Apache Kafka into PHP applications via a consumer/producer pipeline architecture. Requires `ext-rdkafka`.
 
 ## Commands
 
@@ -41,7 +41,7 @@ Releases are made via a GitHub Release on `1.x` with a `vX.Y.Z` tag — there is
 
 ## Packages
 
-The root `kafka-bus/kafka-bus` is itself an installable package that ships all five (Moonshine-style): it autoloads `packages/*/src` and lists them in `replace` as `self.version`, maintained by hand. Consumers can `composer require kafka-bus/kafka-bus` or any single package. The root `require` holds only external deps (union of the packages' requirements); when adding a package or an external dependency to one, mirror it in the root `autoload`/`require`. `.gitattributes` keeps dev-only dirs out of the dist archive.
+The root `kafka-bus/kafka-bus` is itself an installable package that ships all six (Moonshine-style): it autoloads `packages/*/src` and lists them in `replace` as `self.version`, maintained by hand. Consumers can `composer require kafka-bus/kafka-bus` or any single package. The root `require` holds only external deps (union of the packages' requirements); when adding a package or an external dependency to one, mirror it in the root `autoload`/`require`. `.gitattributes` keeps dev-only dirs out of the dist archive.
 
 | Package | Directory | Role |
 |---------|-----------|------|
@@ -50,8 +50,9 @@ The root `kafka-bus/kafka-bus` is itself an installable package that ships all f
 | `kafka-bus/messages` | `packages/messages/` | Message DTOs, typed `Payload`, casters, `DomainMessage` base class |
 | `kafka-bus/worker` | `packages/worker/` | Kafka polling loop infrastructure (`Worker`, `WorkerRunner`) — reads raw messages and dispatches them to `Bus` |
 | `kafka-bus/metadata` | `packages/metadata/` | Kafka cluster metadata: topics/partitions listing, consumer group offsets inspection and administration |
+| `kafka-bus/typed-topics` | `packages/typed-topics/` | Header-based message decoding and dispatch for multiple message types on one topic |
 
-`commiter`, `messages`, `worker` and `metadata` depend only on `core`. All five are versioned and released in sync by the same tag (see Releasing).
+`commiter`, `messages`, `worker` and `metadata` depend only on `core`. All six are versioned and released in sync by the same tag (see Releasing).
 
 ## Architecture
 
@@ -113,7 +114,7 @@ Dev-only [PHPBench](https://phpbench.readthedocs.io) suite (not a package, not r
 ## Code Style Constraints
 
 - All files: `declare(strict_types=1)`
-- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`, `KafkaBus\Worker`, `KafkaBus\Metadata` (dev-only: `KafkaBus\Workbench` in `workbench/`, `KafkaBus\Benchmarks` in `benchmarks/`)
+- Namespace roots: `KafkaBus\Core`, `KafkaBus\Commiter`, `KafkaBus\Messages`, `KafkaBus\Worker`, `KafkaBus\Metadata`, `KafkaBus\TypedTopics` (dev-only: `KafkaBus\Workbench` in `workbench/`, `KafkaBus\Benchmarks` in `benchmarks/`)
 - Native function calls: follow what `composer format` produces — PHP-CS-Fixer (`native_function_invocation`) strips the leading `\` from most of them (`array_map()`, `json_encode()`), and `packages/*/src` is written that way. Don't add `\` by hand; run `composer format` instead
 - PHPStan level max — no ignored errors without explicit baseline; missing type info for `ext-rdkafka` goes into `stubs/RdKafka.stub`
 - PHP-CS-Fixer enforces global namespace imports (no `use function`)

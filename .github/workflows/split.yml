@@ -22,6 +22,7 @@ jobs:
           - commiter
           - messages
           - metadata
+          - typed-topics
           - worker
 
     steps:

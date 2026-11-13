@@ -20,7 +20,6 @@ use KafkaBus\Core\Connections\NullConnection;
 use KafkaBus\Core\Publishers\PublisherFactory;
 use KafkaBus\Core\Publishers\Routing\Options;
 use KafkaBus\Core\Publishers\Routing\PublisherRoutesBuilder;
-use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
 use KafkaBus\Core\Receivers\Pipelines\ReceiverPipelineMiddleware;
 use KafkaBus\Core\Receivers\Routing\ReceiverBuilder;
 use KafkaBus\Core\Receivers\Routing\RouteInfo;
@@ -55,11 +54,11 @@ final class BusFactory
      *
      * @param list<ReceiverPipelineMiddleware> $middleware
      */
-    public static function receiver(int $topics, array $middleware = [], ?MessageFactoryInterface $factory = null, ?callable $handler = null): Bus
+    public static function receiver(int $topics, array $middleware = [], ?callable $handler = null): Bus
     {
         $registry = self::registry($topics);
 
-        $builder = ReceiverBuilder::make($registry, $factory);
+        $builder = ReceiverBuilder::make($registry);
         for ($n = 0; $n < $topics; $n++) {
             $builder->add(new RouteInfo("topic-$n", $handler ?? new VoidConsumerHandlerFaker(), $middleware));
         }

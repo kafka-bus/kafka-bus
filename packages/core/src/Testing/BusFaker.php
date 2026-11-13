@@ -65,10 +65,10 @@ final class BusFaker implements BusInterface
         $this->bus->publishBatch($messageBatch);
     }
 
-    public function dispatch(ConsumerMessageInterface $message): void
+    public function dispatch(ConsumerMessageInterface|Message $message): void
     {
-        $newMessage = $message->original();
-        $newMessage->topic_name = $this->topicRegistry->tryGetTopicName($message->topicName());
+        $newMessage = $message instanceof Message ? $message : $message->original();
+        $newMessage->topic_name = $this->topicRegistry->tryGetTopicName($newMessage->topic_name);
 
         $this->bus->dispatch(new ConsumerMessage($newMessage));
     }

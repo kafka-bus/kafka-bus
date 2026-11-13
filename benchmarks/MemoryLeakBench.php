@@ -11,6 +11,7 @@ use KafkaBus\Benchmarks\Fixtures\Kafka;
 use KafkaBus\Benchmarks\Fixtures\Messages\TopicMessage0;
 use KafkaBus\Benchmarks\Fixtures\PassThroughMiddleware;
 use KafkaBus\Core\Publishers\MessageBatch;
+use KafkaBus\Core\Receivers\Attributes\MessageFactory;
 use KafkaBus\Messages\Factories\DomainMessageFactory;
 use KafkaBus\Worker\Consumers\ConsumerStream;
 use KafkaBus\Workbench\ProductMessage;
@@ -103,8 +104,8 @@ final class MemoryLeakBench
     {
         $bus = BusFactory::receiver(
             self::TOPICS,
-            factory: new DomainMessageFactory(ProductMessage::class),
-            handler: static function (ProductMessage $message): void {
+            handler: #[MessageFactory(new DomainMessageFactory(ProductMessage::class))]
+            static function (ProductMessage $message): void {
                 $category = $message->category->name;
                 $attributes = $message->attributes;
             },

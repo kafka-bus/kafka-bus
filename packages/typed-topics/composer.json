@@ -1,0 +1,20 @@
+{
+    "name": "kafka-bus/typed-topics",
+    "description": "Typed topics for Kafka Bus",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "kafka-bus/core": "^2.2",
+        "psr/log": "^1.1|^2.0|^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "KafkaBus\\TypedTopics\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KafkaBus\\TypedTopics\\Tests\\": "tests/"
+        }
+    }
+}
