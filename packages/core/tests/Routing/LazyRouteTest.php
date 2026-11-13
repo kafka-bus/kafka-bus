@@ -4,6 +4,7 @@ namespace KafkaBus\Core\Tests\Routing;
 
 use KafkaBus\Core\Consumers\Messages\ConsumerMessage;
 use KafkaBus\Core\Receivers\Receiver;
+use KafkaBus\Core\Receivers\Routing\HandlerExecutor;
 use KafkaBus\Core\Receivers\Routing\ReceiverRouter;
 use KafkaBus\Core\Receivers\Routing\Route;
 use KafkaBus\Core\Routing\LazyRoute;
@@ -27,15 +28,16 @@ final class LazyRouteTest
             ->add(new Topic('events.products.1', 'products'));
 
         $builds = 0;
+        $handler = HandlerExecutor::fromHandler(new VoidConsumerHandlerFaker());
 
         $routes = (new RouteCollection(Route::class))
-            ->add(new Route($topicRegistry->get('orders'), new VoidConsumerHandlerFaker()))
+            ->add(new Route($topicRegistry->get('orders'), $handler))
             ->add(new LazyRoute(
                 'events.products.1',
-                function () use (&$builds, $topicRegistry): Route {
+                function () use (&$builds, $topicRegistry, $handler): Route {
                     $builds++;
 
-                    return new Route($topicRegistry->get('products'), new VoidConsumerHandlerFaker());
+                    return new Route($topicRegistry->get('products'), $handler);
                 },
             ));
 
@@ -68,7 +70,10 @@ final class LazyRouteTest
 
         $lazyRoute = new LazyRoute(
             'events.orders.1',
-            static fn (): Route => new Route($topicRegistry->get('products'), new VoidConsumerHandlerFaker()),
+            static fn (): Route => new Route(
+                $topicRegistry->get('products'),
+                HandlerExecutor::fromHandler(new VoidConsumerHandlerFaker()),
+            ),
         );
 
         Expect::exception(LogicException::class)

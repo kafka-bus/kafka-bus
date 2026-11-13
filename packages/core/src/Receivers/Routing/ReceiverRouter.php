@@ -28,7 +28,7 @@ final class ReceiverRouter extends AbstractRouter
 
     protected function build(string $key, mixed $route): RouteExecutor
     {
-        return new RouteExecutor($route->handler, $route->messageFactory, $route->middleware);
+        return new RouteExecutor($route->handler, $route->middleware);
     }
 
     protected function routeNotFound(string $key): Throwable

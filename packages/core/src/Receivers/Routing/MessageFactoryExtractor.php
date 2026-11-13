@@ -7,6 +7,7 @@ use KafkaBus\Core\Receivers\Attributes\MessageFactory;
 use KafkaBus\Core\Receivers\Messages\JsonMessageFactory;
 use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
 use KafkaBus\Core\Receivers\Messages\OriginalMessageFactory;
+use KafkaBus\Core\Receivers\Messages\ProvidesMessageFactory;
 use KafkaBus\Core\Receivers\Messages\StringMessageFactory;
 use RdKafka\Message;
 use ReflectionAttribute;
@@ -19,6 +20,10 @@ class MessageFactoryExtractor
 {
     public function extract(callable $handler): ?MessageFactoryInterface
     {
+        if ($handler instanceof ProvidesMessageFactory) {
+            return $handler->messageFactory();
+        }
+
         $reflection = match (true) {
             $handler instanceof Closure => new ReflectionFunction($handler),
             \is_object($handler) && method_exists($handler, '__invoke') => new ReflectionMethod($handler, '__invoke'),
@@ -29,11 +34,11 @@ class MessageFactoryExtractor
             return null;
         }
 
-        return $this->fromAttribute($reflection)
+        return $this->extractFromAttribute($reflection)
             ?? $this->fromArgs($reflection);
     }
 
-    private function fromAttribute(ReflectionFunctionAbstract $reflection): ?MessageFactoryInterface
+    private function extractFromAttribute(ReflectionFunctionAbstract $reflection): ?MessageFactoryInterface
     {
         /** @var ReflectionAttribute<MessageFactory>|null $attribute */
         $attribute = $reflection->getAttributes(MessageFactory::class)[0] ?? null;

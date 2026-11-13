@@ -15,6 +15,7 @@
 | `kafka-bus/messages` | `packages/messages` | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/messages.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/messages) |
 | `kafka-bus/worker`   | `packages/worker`   | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/worker.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/worker)     |
 | `kafka-bus/metadata` | `packages/metadata` | [![Latest Version](https://img.shields.io/packagist/v/kafka-bus/metadata.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/metadata) |
+| `kafka-bus/typed-topics` | `packages/typed-topics` | — |
 
 > Laravel- и Spiral-интеграции живут в отдельных репозиториях — у них свой цикл версионирования.
 

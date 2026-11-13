@@ -7,22 +7,20 @@ namespace KafkaBus\Core\Receivers\Pipelines;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Exceptions\Consumers\MessageConsumerNotHandledException;
 use KafkaBus\Core\Pipelines\PipelineHandlerInterface;
+use KafkaBus\Core\Receivers\Routing\HandlerExecutor;
 
 /**
  * @implements PipelineHandlerInterface<ConsumerMessageInterface, ConsumerMessageInterface>
  */
-final class ReceiverPipelineHandler implements PipelineHandlerInterface
+final readonly class ReceiverPipelineHandler implements PipelineHandlerInterface
 {
-    /**
-     * @param ConsumerMessageInterface $target
-     * @param mixed $formatted
-     * @param callable(mixed $message): void $handler
-     */
+    private mixed $formatted;
+
     public function __construct(
-        protected ConsumerMessageInterface $target,
-        protected mixed $formatted,
-        protected mixed $handler
+        private ConsumerMessageInterface $target,
+        private HandlerExecutor $executor,
     ) {
+        $this->formatted = $this->executor->fromKafka($this->target);
     }
 
     public function target(): ConsumerMessageInterface
@@ -40,7 +38,7 @@ final class ReceiverPipelineHandler implements PipelineHandlerInterface
      */
     public function handle(): ConsumerMessageInterface
     {
-        \call_user_func($this->handler, $this->formatted);
+        $this->executor->execute($this->formatted, $this->target);
 
         return $this->target;
     }

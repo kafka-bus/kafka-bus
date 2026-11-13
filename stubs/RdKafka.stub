@@ -2,6 +2,19 @@
 
 namespace RdKafka;
 
+class Message
+{
+    /**
+     * @var array<string, string|null>|null Native records may leave this property uninitialized.
+     */
+    public $headers;
+
+    /**
+     * @var string
+     */
+    public $topic_name;
+}
+
 class KafkaConsumer
 {
     /**

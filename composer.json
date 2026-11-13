@@ -1,6 +1,6 @@
 {
     "name": "kafka-bus/kafka-bus",
-    "description": "Kafka Bus: core, commiter, messages, worker and metadata in one package",
+    "description": "Kafka Bus: core, commiter, messages, worker, metadata and typed topics in one package",
     "license": "MIT",
     "authors": [
         {
@@ -20,6 +20,7 @@
         "kafka-bus/core": "self.version",
         "kafka-bus/messages": "self.version",
         "kafka-bus/metadata": "self.version",
+        "kafka-bus/typed-topics": "self.version",
         "kafka-bus/worker": "self.version"
     },
     "require-dev": {
@@ -39,7 +40,8 @@
             "KafkaBus\\Commiter\\": "packages/commiter/src/",
             "KafkaBus\\Messages\\": "packages/messages/src/",
             "KafkaBus\\Worker\\": "packages/worker/src/",
-            "KafkaBus\\Metadata\\": "packages/metadata/src/"
+            "KafkaBus\\Metadata\\": "packages/metadata/src/",
+            "KafkaBus\\TypedTopics\\": "packages/typed-topics/src/"
         }
     },
     "autoload-dev": {
@@ -49,6 +51,7 @@
             "KafkaBus\\Core\\Tests\\": "packages/core/tests/",
             "KafkaBus\\Worker\\Tests\\": "packages/worker/tests/",
             "KafkaBus\\Metadata\\Tests\\": "packages/metadata/tests/",
+            "KafkaBus\\TypedTopics\\Tests\\": "packages/typed-topics/tests/",
             "KafkaBus\\Workbench\\": "workbench/",
             "KafkaBus\\Benchmarks\\": "benchmarks/"
         }

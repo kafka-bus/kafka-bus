@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace KafkaBus\Core\Receivers\Routing;
 
 use KafkaBus\Core\Receivers\LazyReceiver;
-use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
 use KafkaBus\Core\Receivers\Receiver;
 use KafkaBus\Core\Testing\Receivers\ReceiverFaker;
 use KafkaBus\Core\Topics\TopicRegistry;
@@ -23,9 +22,9 @@ final class ReceiverBuilder
         return $this;
     }
 
-    public static function make(TopicRegistry $registry, ?MessageFactoryInterface $factory = null): ReceiverBuilder
+    public static function make(TopicRegistry $registry): ReceiverBuilder
     {
-        return new self(ReceiverRoutesBuilder::make($registry, $factory));
+        return new self(ReceiverRoutesBuilder::make($registry));
     }
 
     public function build(): Receiver

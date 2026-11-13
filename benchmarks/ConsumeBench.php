@@ -14,6 +14,7 @@ use KafkaBus\Core\Bus;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessage;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageConverter;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
+use KafkaBus\Core\Receivers\Attributes\MessageFactory;
 use KafkaBus\Messages\Factories\DomainMessageFactory;
 use KafkaBus\Workbench\ProductMessage;
 use PhpBench\Attributes\BeforeMethods;
@@ -75,11 +76,15 @@ final class ConsumeBench
         $this->commiter = BusFactory::receiver(self::TOPICS, [
             new ConsumerCommiterMiddleware(new NativeMessageRepository(new ArrayRepositorySource())),
         ]);
-        $this->domain = BusFactory::receiver(self::TOPICS, factory: new DomainMessageFactory(ProductMessage::class), handler: static function (ProductMessage $message): void {
-            // обращение к полям материализует касты вложенных Payload
-            $category = $message->category->name;
-            $attributes = $message->attributes;
-        });
+        $this->domain = BusFactory::receiver(
+            self::TOPICS,
+            handler: #[MessageFactory(new DomainMessageFactory(ProductMessage::class))]
+            static function (ProductMessage $message): void {
+                // обращение к полям материализует касты вложенных Payload
+                $category = $message->category->name;
+                $attributes = $message->attributes;
+            },
+        );
 
         $productPayload = json_encode(ProductMessage::factory()->makeArray(), JSON_THROW_ON_ERROR);
         for ($n = 0; $n < self::POOL; $n++) {

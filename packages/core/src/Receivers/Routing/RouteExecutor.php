@@ -4,31 +4,24 @@ namespace KafkaBus\Core\Receivers\Routing;
 
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Pipelines\PipelineBuilder;
-use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
 use KafkaBus\Core\Receivers\Pipelines\ReceiverPipelineHandler;
 use KafkaBus\Core\Receivers\Pipelines\ReceiverPipelineMiddleware;
 
 final readonly class RouteExecutor
 {
     /**
-     * @param callable $handler
-     * @param MessageFactoryInterface $factory
+     * @param HandlerExecutor $executor
      * @param list<ReceiverPipelineMiddleware> $middleware
      */
     public function __construct(
-        protected mixed $handler,
-        protected MessageFactoryInterface $factory,
-        protected array $middleware = []
+        private HandlerExecutor $executor,
+        private array $middleware = []
     ) {
     }
 
     public function execute(ConsumerMessageInterface $message): void
     {
-        $pipelineHandler = new ReceiverPipelineHandler(
-            $message,
-            $this->factory->fromKafka($message),
-            $this->handler,
-        );
+        $pipelineHandler = new ReceiverPipelineHandler($message, $this->executor);
 
         $pipeline = PipelineBuilder::for($pipelineHandler)
             ->middleware($this->middleware)

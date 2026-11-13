@@ -30,12 +30,14 @@ final class ConsumerMessage implements ConsumerMessageInterface
 
     public function payload(): string
     {
-        return $this->message->payload;
+        return $this->message->payload ?? '';
     }
 
     public function headers(): array
     {
-        return $this->message->headers;
+        $message = $this->message;
+
+        return $message->headers ?? [];
     }
 
     public function original(): Message
