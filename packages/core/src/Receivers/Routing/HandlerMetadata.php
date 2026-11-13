@@ -2,7 +2,6 @@
 
 namespace KafkaBus\Core\Receivers\Routing;
 
-use Closure;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use RdKafka\Message;
 use ReflectionFunction;
@@ -18,10 +17,10 @@ final readonly class HandlerMetadata
     {
     }
 
-    public static function fromHandler(Closure $handler): self
+    public static function fromHandler(callable $handler): self
     {
         $metadataParameters = [];
-        $reflection = new ReflectionFunction($handler);
+        $reflection = new ReflectionFunction($handler(...));
 
         foreach (\array_slice($reflection->getParameters(), 1) as $parameter) {
             if ($parameter->isVariadic()) {
