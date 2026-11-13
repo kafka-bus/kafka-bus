@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.2.2 - 2026-11-13
+
+### What's Changed
+
+* feat: Теперь в тестовых фабриках сообщений можно предзаполнять заголовки by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/15
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.2.1...v2.2.2
+
 ## v2.2.1 - 2026-11-13
 
 ### What's Changed
