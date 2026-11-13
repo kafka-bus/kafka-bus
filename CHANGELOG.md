@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.2.1 - 2026-11-13
+
+### What's Changed
+
+* fix: Handler теперь стал публичным у HandlerExecutor by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/14
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.2.0...v2.2.1
+
 ## v2.2.0 - 2026-11-13
 
 ### What's Changed
