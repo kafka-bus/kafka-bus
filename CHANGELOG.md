@@ -2,6 +2,22 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.3.0 - 2026-11-16
+
+### What's Changed
+
+* fix: Убрать ID сообщения из ошибки необработанного сообщения by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/16
+* fix: Обработка ошибок коммита сообщений by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/17
+* fix: Очистка пустых настроек соединения by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/18
+* fix: Отключить автоматическое сохранение offset по умолчанию by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/19
+* fix: Обработка ошибок JSON в сообщениях by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/20
+* feat: Поддержка всех форм callable при извлечении фабрики сообщений by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/21
+* fix: Использование фабрики сообщений из обработчика маршрута by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/22
+* fix: Исправлена ошибка передачи неизвестного типа сообщения в исключение by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/23
+* fix: Устранение мутации DateTime при сериализации by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/24
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.2.2...v2.3.0
+
 ## v2.2.2 - 2026-11-13
 
 ### What's Changed
