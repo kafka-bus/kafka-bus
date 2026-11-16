@@ -28,7 +28,8 @@ final class IdempotencyMessageRepositoryTest
         Assert::same($repository->attempt($message)->number, 1);
 
         $repository->failed($message);
-        Assert::same($source->get('order-123-products')?->number, 1);
+        Assert::same($source->get('order-123-products')?->number, 2);
+        Assert::same($repository->attempt($message)->number, 2);
 
         $repository->commit($message);
         Assert::notNull($source->get('order-123-products')?->commitedAt);

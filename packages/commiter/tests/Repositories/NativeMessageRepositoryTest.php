@@ -31,7 +31,8 @@ final class NativeMessageRepositoryTest
         Assert::null($attempt->commitedAt);
 
         $repository->failed($message);
-        Assert::same($source->get($message->msgId())?->number, 1);
+        Assert::same($source->get($message->msgId())?->number, 2);
+        Assert::same($repository->attempt($message)->number, 2);
         Assert::null($source->get($message->msgId())?->commitedAt);
 
         $repository->commit($message);
