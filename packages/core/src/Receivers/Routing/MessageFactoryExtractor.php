@@ -2,7 +2,6 @@
 
 namespace KafkaBus\Core\Receivers\Routing;
 
-use Closure;
 use KafkaBus\Core\Receivers\Attributes\MessageFactory;
 use KafkaBus\Core\Receivers\Messages\JsonMessageFactory;
 use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
@@ -13,7 +12,6 @@ use RdKafka\Message;
 use ReflectionAttribute;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
-use ReflectionMethod;
 use ReflectionNamedType;
 
 class MessageFactoryExtractor
@@ -24,15 +22,7 @@ class MessageFactoryExtractor
             return $handler->messageFactory();
         }
 
-        $reflection = match (true) {
-            $handler instanceof Closure => new ReflectionFunction($handler),
-            \is_object($handler) && method_exists($handler, '__invoke') => new ReflectionMethod($handler, '__invoke'),
-            default => null
-        };
-
-        if ($reflection === null) {
-            return null;
-        }
+        $reflection = new ReflectionFunction($handler(...));
 
         return $this->extractFromAttribute($reflection)
             ?? $this->fromArgs($reflection);
