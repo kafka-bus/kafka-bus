@@ -12,6 +12,17 @@ You can install the package via composer:
 composer require kafka-bus/core
 ```
 
+## Consumer offsets
+
+`ConsumerConfig` defaults to `autoCommit: false`. In this mode, `enable.auto.commit`
+and `enable.auto.offset.store` are disabled, including when additional options request
+automatic offset storage. Call `ConsumerInterface::commit($message)` after successful
+processing; it commits synchronously and retries failures.
+
+Set `autoCommit: true` explicitly to use automatic commits. In that mode, automatic
+offset storage follows Kafka defaults or your additional options, and offsets may
+be committed before processing finishes.
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

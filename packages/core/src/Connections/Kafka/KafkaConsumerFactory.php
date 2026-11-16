@@ -25,6 +25,10 @@ final class KafkaConsumerFactory
 
         $options['enable.auto.commit'] = $config->autoCommit ? 'true' : 'false';
 
+        if (!$config->autoCommit) {
+            $options['enable.auto.offset.store'] = 'false';
+        }
+
         return new KafkaConsumer($this->confConverter->fromArray($options));
     }
 }
