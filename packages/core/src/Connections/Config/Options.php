@@ -113,7 +113,10 @@ final readonly class Options
      */
     private function cleanupSettings(array $settings = []): array
     {
-        return array_filter(array_map($this->prepareSetting(...), $settings));
+        return array_filter(
+            array_map($this->prepareSetting(...), $settings),
+            static fn (int|string|null $value): bool => $value !== null && $value !== '',
+        );
     }
 
     private function prepareSetting(int|bool|string|null $value): int|string|null
@@ -126,6 +129,6 @@ final readonly class Options
             return $value ? 'true' : 'false';
         }
 
-        return $value;
+        return \is_string($value) ? trim($value) : $value;
     }
 }
