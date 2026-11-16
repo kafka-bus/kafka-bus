@@ -10,6 +10,20 @@ use DateTime;
 class DateTimeCasterTest
 {
     #[Test]
+    public function rollback_does_not_mutate_datetime(): void
+    {
+        $caster = new DateTimeCaster();
+        $datetime = new DateTime('2020-01-01T06:00:00.123456+03:00');
+        $original = clone $datetime;
+
+        $rollback = $caster->rollback($datetime, 'updated_at');
+
+        Assert::same($rollback, '2020-01-01T03:00:00.123456+00:00');
+        Assert::same($datetime->format('Y-m-d\TH:i:s.uP'), $original->format('Y-m-d\TH:i:s.uP'));
+        Assert::same($datetime->getTimezone()->getName(), $original->getTimezone()->getName());
+    }
+
+    #[Test]
     public function cast_date_time(): void
     {
         $caster = new DateTimeCaster();

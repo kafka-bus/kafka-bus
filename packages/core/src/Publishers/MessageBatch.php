@@ -40,7 +40,7 @@ final class MessageBatch
     /**
      * @template TClass of ProducerMessageInterface
      *
-     * @param list<TClass> $messages
+     * @param non-empty-list<TClass> $messages
      * @return self<TClass>
      */
     public static function fromArray(array $messages): self
