@@ -28,7 +28,8 @@ final class MessageFactoryExtractorTest
             [$object, 'handleInstance'],
             $object,
             __NAMESPACE__ . '\\extractorArrayHandler',
-            static function (array $message): void {},
+            static function (array $message): void {
+            },
         ] as $handler) {
             Assert::true($extractor->extract($handler) instanceof JsonMessageFactory);
         }
@@ -51,7 +52,9 @@ final class MessageFactoryExtractorTest
     {
         $handler = new class () implements ProvidesMessageFactory {
             #[MessageFactory(new StringMessageFactory())]
-            public function __invoke(string $message): void {}
+            public function __invoke(string $message): void
+            {
+            }
 
             public function messageFactory(): MessageFactoryInterface
             {
@@ -65,17 +68,29 @@ final class MessageFactoryExtractorTest
 
 final class ExtractorHandler
 {
-    public static function handle(array $message): void {}
+    public static function handle(array $message): void
+    {
+    }
 
-    public function handleInstance(array $message): void {}
+    public function handleInstance(array $message): void
+    {
+    }
 
-    public function __invoke(array $message): void {}
+    public function __invoke(array $message): void
+    {
+    }
 
     #[MessageFactory(new StringMessageFactory())]
-    public static function attributed(mixed $message): void {}
+    public static function attributed(mixed $message): void
+    {
+    }
 }
 
-function extractorArrayHandler(array $message): void {}
+function extractorArrayHandler(array $message): void
+{
+}
 
 #[MessageFactory(new StringMessageFactory())]
-function extractorAttributedHandler(mixed $message): void {}
+function extractorAttributedHandler(mixed $message): void
+{
+}
