@@ -2,7 +2,6 @@
 
 namespace KafkaBus\Messages\Data\Casters;
 
-use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
@@ -35,8 +34,9 @@ class DateTimeCaster implements CasterInterface
 
     public function rollback(mixed $value, string $attributeKey): mixed
     {
-        if ($value instanceof DateTime || $value instanceof DateTimeImmutable) {
-            return $value->setTimezone(new DateTimeZone('UTC'))
+        if ($value instanceof DateTimeInterface) {
+            return DateTimeImmutable::createFromInterface($value)
+                ->setTimezone(new DateTimeZone('UTC'))
                 ->format($this->format);
         }
 
