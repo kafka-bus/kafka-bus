@@ -23,12 +23,10 @@ final readonly class MessageRoute
 
     public static function fromHandler(callable $handler, MessageFactoryInterface|null $factory = null): self
     {
-        $callback = $handler(...);
-
-        $factory ??= (new MessageFactoryExtractor())->extract($callback)
+        $factory ??= (new MessageFactoryExtractor())->extract($handler)
             ?? new NativeMessageFactory();
 
-        return new self($callback, $factory);
+        return new self($handler(...), $factory);
     }
 
     public function decode(ConsumerMessageInterface $message): mixed
