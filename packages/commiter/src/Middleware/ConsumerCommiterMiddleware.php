@@ -2,7 +2,6 @@
 
 namespace KafkaBus\Commiter\Middleware;
 
-use Exception;
 use KafkaBus\Commiter\Interfaces\ConsumerMessageRepositoryInterface;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Pipelines\PipelineInterface;
@@ -10,6 +9,7 @@ use KafkaBus\Core\Receivers\Pipelines\ReceiverPipelineHandler;
 use KafkaBus\Core\Receivers\Pipelines\ReceiverPipelineMiddleware;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 
 final readonly class ConsumerCommiterMiddleware implements ReceiverPipelineMiddleware
 {
@@ -24,7 +24,7 @@ final readonly class ConsumerCommiterMiddleware implements ReceiverPipelineMiddl
      * @param PipelineInterface<ConsumerMessageInterface, ReceiverPipelineHandler> $pipeline
      * @return PipelineInterface<ConsumerMessageInterface, ReceiverPipelineHandler>
      *
-     * @throws Exception
+     * @throws Throwable
      */
     public function handle(PipelineInterface $pipeline): PipelineInterface
     {
@@ -49,7 +49,7 @@ final readonly class ConsumerCommiterMiddleware implements ReceiverPipelineMiddl
 
         if ($this->maxAttempt > 0 && $attempt->number > $this->maxAttempt) {
             $this->logger
-                ->error("Message #$attempt->key number of read attempts has been exceeded", $context);
+                ->error('Maximum number of message read attempts exceeded', $context);
 
             return $pipeline;
         }
@@ -64,7 +64,7 @@ final readonly class ConsumerCommiterMiddleware implements ReceiverPipelineMiddl
 
             return $pipeline;
         }
-        catch (Exception $exception) {
+        catch (Throwable $exception) {
             $this->repository->failed($message);
 
             throw $exception;
