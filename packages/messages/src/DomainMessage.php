@@ -2,12 +2,15 @@
 
 namespace KafkaBus\Messages;
 
+use JsonException;
 use KafkaBus\Core\Producers\Messages\HasKey;
 use KafkaBus\Core\Producers\Messages\ProducerMessageInterface;
 use KafkaBus\Messages\Data\Payload;
 
 abstract class DomainMessage extends Payload implements HasKey, ProducerMessageInterface
 {
+    public const JSON_DEPTH = 512;
+
     /**
      * @param array<string, mixed> $attributes
      * @param DomainEventEnum $event
@@ -34,13 +37,19 @@ abstract class DomainMessage extends Payload implements HasKey, ProducerMessageI
         return $this->dirty;
     }
 
+    /**
+     * @throws JsonException
+     */
     public function toPayload(): string
     {
-        return (string) json_encode([
+        /** @var int<1, max> $depth */
+        $depth = static::JSON_DEPTH;
+
+        return json_encode([
             'event' => $this->event->value,
             'attributes' => $this->jsonSerialize(),
             'dirty' => $this->dirty,
-        ]);
+        ], JSON_THROW_ON_ERROR, $depth);
     }
 
     /**
