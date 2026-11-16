@@ -33,6 +33,6 @@ final readonly class HeaderMessageFactory implements MessageFactoryInterface
         }
 
         return ($this->routes[$type] ?? null)?->decode($message)
-            ?? new UnroutableMessage($message, UnroutableReason::UnknownType);
+            ?? new UnroutableMessage($message, UnroutableReason::UnknownType, $type);
     }
 }
