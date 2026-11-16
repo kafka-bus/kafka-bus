@@ -10,9 +10,6 @@ class MessageConsumerNotHandledException extends Exception
 {
     public function __construct(public readonly ConsumerMessageInterface $consumerMessage, ?Throwable $previous = null)
     {
-        $message = "Message #{$this->consumerMessage->msgId()} from ".
-            "{$this->consumerMessage->topicName()} not handled";
-
-        parent::__construct($message, 500, $previous);
+        parent::__construct("Message from {$this->consumerMessage->topicName()} not handled", 500, $previous);
     }
 }
