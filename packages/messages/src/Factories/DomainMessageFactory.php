@@ -2,6 +2,7 @@
 
 namespace KafkaBus\Messages\Factories;
 
+use JsonException;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Receivers\Messages\MessageFactoryInterface;
 use KafkaBus\Messages\DomainEventEnum;
@@ -23,15 +24,20 @@ readonly class DomainMessageFactory implements MessageFactoryInterface
     /**
      * @param ConsumerMessageInterface $message
      * @return TMessage
+     *
+     * @throws JsonException
      */
     public function fromKafka(ConsumerMessageInterface $message): mixed
     {
+        /** @var int<1, max> $depth */
+        $depth = ($this->messageClass)::JSON_DEPTH;
+
         /** @var array{
          *      event: string|null,
          *      attributes: array<string, mixed>|null,
          *      dirty: list<string>|null
          * } $data */
-        $data = json_decode($message->payload(), true);
+        $data = json_decode($message->payload(), true, $depth, JSON_THROW_ON_ERROR);
 
         $event = DomainEventEnum::tryFrom($data['event'] ?? 'create')
             ?: DomainEventEnum::Create;
