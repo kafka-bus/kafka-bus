@@ -17,17 +17,17 @@ final class ArrayRepositorySourceTest
 
         $source->increment('key-1');
 
-        Assert::same($source->get('key-1')?->number, 1);
+        Assert::same($source->get('key-1')?->number, 2);
         Assert::null($source->get('key-1')?->commitedAt);
 
         $source->increment('key-1');
 
-        Assert::same($source->get('key-1')?->number, 2);
+        Assert::same($source->get('key-1')?->number, 3);
         Assert::null($source->get('key-1')?->commitedAt);
 
         $source->commit('key-1');
 
-        Assert::same($source->get('key-1')?->number, 2);
+        Assert::same($source->get('key-1')?->number, 3);
         Assert::notNull($source->get('key-1')?->commitedAt);
     }
 }

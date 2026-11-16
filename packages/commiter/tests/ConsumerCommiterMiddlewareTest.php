@@ -88,7 +88,6 @@ final class ConsumerCommiterMiddlewareTest
 
         $source = new ArrayRepositorySource();
         $source->increment('over-limit-production.fact.products.1');
-        $source->increment('over-limit-production.fact.products.1');
 
         $repository = new IdempotencyMessageRepository($source);
 
@@ -106,6 +105,41 @@ final class ConsumerCommiterMiddlewareTest
         $busFaker->assertDispatched('products');
 
         Assert::same($source->get('over-limit-production.fact.products.1')?->number, 2);
+    }
+
+    public function doesNotRetryAfterFirstFailureWhenMaxAttemptIsOne(): void
+    {
+        $topics = (new TopicRegistry())
+            ->add(new Topic('production.fact.products.1', 'products'));
+        $message = new ConsumerMessage(MessageFactory::for()
+            ->withTopicKey('products', $topics)
+            ->make('test-message'));
+        $repository = new IdempotencyMessageRepository(new ArrayRepositorySource());
+        $handler = new class () {
+            public int $calls = 0;
+
+            public function __invoke(string $message): void
+            {
+                ++$this->calls;
+                throw new RuntimeException($message);
+            }
+        };
+        $bus = $this->buildBusFaker($topics, $handler, $repository, maxAttempt: 1);
+
+        try {
+            $bus->dispatch($message);
+            Assert::fail('Handler exception was expected');
+        }
+        catch (MessageConsumerNotHandledException $exception) {
+            Assert::same($exception->getPrevious()?->getMessage(), 'test-message');
+        }
+
+        $bus->dispatch($message);
+        $bus->dispatch($message);
+
+        Assert::same($handler->calls, 1);
+        Assert::same($repository->attempt($message)->number, 2);
+        Assert::null($repository->attempt($message)->commitedAt);
     }
 
     public function incrementsFailedAttemptAndRethrowsException(): void
@@ -143,7 +177,7 @@ final class ConsumerCommiterMiddlewareTest
 
         $busFaker->assertNotDispatched('products');
 
-        Assert::same($source->get('failing-production.fact.products.1')?->number, 2);
+        Assert::same($source->get('failing-production.fact.products.1')?->number, 3);
         Assert::null($source->get('failing-production.fact.products.1')?->commitedAt);
     }
 
