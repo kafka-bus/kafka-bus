@@ -13,7 +13,7 @@ readonly class Options
      */
     public function __construct(
         public array $additionalOptions = [],
-        public bool  $autoCommit = true,
+        public bool  $autoCommit = false,
         public int   $consumerTimeout = 2000,
     ) {
     }
