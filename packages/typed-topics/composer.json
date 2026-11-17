@@ -1,6 +1,23 @@
 {
     "name": "kafka-bus/typed-topics",
-    "description": "Typed topics for Kafka Bus",
+    "description": "Route multiple message types on one Apache Kafka topic using header-based factories and handlers for PHP",
+    "type": "library",
+    "keywords": [
+        "php",
+        "kafka",
+        "apache-kafka",
+        "kafka-bus",
+        "typed-messages",
+        "routing",
+        "headers",
+        "serialization"
+    ],
+    "homepage": "https://github.com/kafka-bus/typed-topics",
+    "support": {
+        "issues": "https://github.com/kafka-bus/kafka-bus/issues",
+        "source": "https://github.com/kafka-bus/typed-topics",
+        "docs": "https://github.com/kafka-bus/typed-topics#readme"
+    },
     "license": "MIT",
     "require": {
         "php": "^8.2",
@@ -16,5 +33,12 @@
         "psr-4": {
             "KafkaBus\\TypedTopics\\Tests\\": "tests/"
         }
-    }
+    },
+    "authors": [
+        {
+            "name": "Kirill Popkov",
+            "email": "kirill.popkov.work@gmail.com",
+            "role": "Developer"
+        }
+    ]
 }

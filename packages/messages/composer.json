@@ -1,14 +1,23 @@
 {
     "name": "kafka-bus/messages",
-    "description": "Message builder and DTO helpers for Kafka Bus — structured message creation and validation",
+    "description": "JSON messages, domain events and payload casters for PHP applications using Kafka Bus",
+    "type": "library",
     "keywords": [
+        "php",
         "kafka",
         "kafka-bus",
-        "Apache Kafka",
-        "message",
+        "json",
+        "messages",
+        "domain-events",
+        "serialization",
         "dto"
     ],
     "homepage": "https://github.com/kafka-bus/messages",
+    "support": {
+        "issues": "https://github.com/kafka-bus/kafka-bus/issues",
+        "source": "https://github.com/kafka-bus/messages",
+        "docs": "https://github.com/kafka-bus/messages#readme"
+    },
     "license": "MIT",
     "authors": [
         {
