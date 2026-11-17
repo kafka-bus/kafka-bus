@@ -2,6 +2,14 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.3.1 - 2026-11-17
+
+### What's Changed
+
+* docs: Обновление документации и метаданных пакетов by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/25
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.3.0...v2.3.1
+
 ## v2.3.0 - 2026-11-16
 
 ### What's Changed
