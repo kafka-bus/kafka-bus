@@ -2,9 +2,10 @@
 
 namespace KafkaBus\Core\Consumers\Messages;
 
+use JsonSerializable;
 use RdKafka\Message;
 
-final class ConsumerMessage implements ConsumerMessageInterface
+final class ConsumerMessage implements ConsumerMessageInterface, JsonSerializable
 {
     public function __construct(
         protected Message $message
@@ -43,5 +44,21 @@ final class ConsumerMessage implements ConsumerMessageInterface
     public function original(): Message
     {
         return $this->message;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'msg_id' => $this->msgId(),
+            'topic_name' => $this->topicName(),
+            'key' => $this->key(),
+            'payload' => $this->payload(),
+            'headers' => $this->headers(),
+            'offset' => $this->message->offset,
+            'partition' => $this->message->partition,
+        ];
     }
 }
