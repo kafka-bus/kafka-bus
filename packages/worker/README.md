@@ -1,40 +1,71 @@
 # Kafka Bus Worker
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/kafka-bus/worker.svg?style=flat-square)](https://packagist.org/packages/kafka-bus/worker)
-
-Kafka polling worker infrastructure for [Kafka Bus](https://github.com/kafka-bus/kafka-bus). A `Worker` only knows which topics to read — it reads raw messages from Kafka and dispatches them to a `KafkaBus\Core\Bus`, which owns all routing and handlers.
+Consumer polling workers for Apache Kafka and PHP. Select topics, configure a consumer group, and dispatch incoming records to Kafka Bus. Workers manage polling and commits; the bus owns routing and handlers.
 
 ## Installation
 
-You can install the package via composer:
+Requires PHP 8.2+ and `ext-rdkafka`. Composer installs Kafka Bus Core.
 
 ```bash
 composer require kafka-bus/worker
 ```
 
-## Offset commits
+## Quick start
 
-Workers default to `autoCommit: false`. Automatic offset storage is disabled, and
-each message is committed synchronously after its dispatcher returns successfully.
-If processing throws, the worker does not commit that message. Messages may be
-delivered again after a failure, so handlers should tolerate duplicates.
+Configure a bus and topic registry first. The [complete quick start](https://github.com/kafka-bus/kafka-bus#quick-start) provides a `bootstrap.php` returning `[$bus, $topics]`. With that file in place, save this as `consumer.php` and run `php consumer.php`:
 
-To opt into automatic commits, set `KafkaBus\Worker\Options(autoCommit: true)`.
-Automatic commits can confirm a message before processing finishes.
+```php
+<?php
 
-## Changelog
+use KafkaBus\Worker\Options;
+use KafkaBus\Worker\Registry\MemoryWorkerRegistry;
+use KafkaBus\Worker\Worker;
+use KafkaBus\Worker\WorkerRunnerFactory;
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+[$bus, $topics] = require __DIR__ . '/bootstrap.php';
 
-## Security Vulnerabilities
+$workers = (new MemoryWorkerRegistry())->add(new Worker(
+    name: 'orders-worker',
+    topics: [$topics->get('orders')],
+    options: new Options(
+        additionalOptions: [
+            'group.id' => 'orders-service',
+            'auto.offset.reset' => 'earliest',
+        ],
+        consumerTimeout: 2000,
+    ),
+));
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+$runner = (new WorkerRunnerFactory($workers))->create($bus, 'orders-worker');
+$runner->run();
+```
 
-## Credits
+The loop keeps listening until stopped or an unhandled error occurs. `earliest` applies only when no valid committed offset exists for the consumer group.
 
-- [Kirill Popkov](https://github.com/popkovkirill)
-- [All Contributors](../../contributors)
+## Commits and errors
 
-## License
+`Options::autoCommit` defaults to `false`. Automatic offset storage is disabled. Each record is committed synchronously after its dispatcher returns successfully. Handler and commit errors propagate to the caller. A handler skipped by middleware still counts as successful dispatch if no exception is raised.
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+Partition EOF, transport errors and the supported Kafka timeout codes are ignored by the stream; other consume errors propagate. Handlers should tolerate duplicates. Use a process supervisor to manage failed worker processes.
+
+Set `autoCommit: true` explicitly to use automatic commits, which may confirm records before processing completes.
+
+## Graceful stop
+
+On systems with `ext-pcntl`, register these handlers before calling `run()`:
+
+```php
+pcntl_async_signals(true);
+pcntl_signal(SIGTERM, static fn () => $runner->forceStop());
+pcntl_signal(SIGINT, static fn () => $runner->forceStop());
+
+$runner->run();
+```
+
+`forceStop()` requests an exit after the current iteration; it does not interrupt a business handler. Create a new runner for a new run after a forced stop.
+
+## Merge workers
+
+Register multiple workers, then call `create($bus, ['orders-worker', 'payments-worker'])`. This combines their topics into one polling loop using the first worker's options. Use separate runners or processes for different consumer groups or settings.
+
+[Issues and contributions](https://github.com/kafka-bus/kafka-bus) · [Releases](https://github.com/kafka-bus/kafka-bus/releases) · [MIT License](https://github.com/kafka-bus/kafka-bus/blob/HEAD/LICENSE.md).

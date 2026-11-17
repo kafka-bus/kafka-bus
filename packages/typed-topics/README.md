@@ -1,105 +1,106 @@
 # Kafka Bus Typed Topics
 
-Send several message types through one Kafka topic. The `x-message-type` header identifies the payload format. On the consumer, Kafka Bus decodes the message before it enters the receiver pipeline.
+Route multiple message types through one Apache Kafka topic in PHP. The `x-message-type` header selects the message factory and handler while the outer bus route selects the topic.
+
+## Installation
+
+Requires PHP 8.2+ and Kafka Bus Core, whose Kafka adapter requires `ext-rdkafka`.
 
 ```bash
 composer require kafka-bus/typed-topics
 ```
 
-Requires Kafka Bus Core 2.1.3 or newer in the 2.x series.
+The examples below also use `kafka-bus/messages`:
 
-The examples use `JsonMessage` and `JsonMessageFactory` from `kafka-bus/messages`. Install that package when using these helpers. The factory result is passed as the handler's first argument.
+```bash
+composer require kafka-bus/messages
+```
 
-## Publish messages
+For connections and worker setup, follow the [complete quick start](https://github.com/kafka-bus/kafka-bus#quick-start). The following snippets replace its message and route definitions before constructing the bus.
 
-Implement `HasMessageType` on each message class. **`PublisherTypedTopicMiddleware` is required on every publisher route for typed messages.** The middleware reads `getMessageType()` and writes its value to the `x-message-type` header used by the receiver to select a route.
+## 1. Define message types
 
 ```php
 use KafkaBus\Messages\JsonMessage;
 use KafkaBus\TypedTopics\HasMessageType;
 
-final class DeliveryUpdated extends JsonMessage implements HasMessageType
+final class OrderPlaced extends JsonMessage implements HasMessageType
 {
-    public const TYPE = 'delivery.updated';
-
     public function getMessageType(): string
     {
-        return self::TYPE;
+        return 'order.placed';
     }
 }
 
-final class DeliveryCompleted extends JsonMessage implements HasMessageType
+final class OrderCancelled extends JsonMessage implements HasMessageType
 {
-    public const TYPE = 'delivery.completed';
-
     public function getMessageType(): string
     {
-        return self::TYPE;
+        return 'order.cancelled';
     }
 }
 ```
 
-Register each producer message class against the same topic key and publish through the bus as usual. Use `HasKey` on messages that need a Kafka partition key.
+Use stable type names as part of your message contract.
+
+## 2. Register publisher routes
+
+Both classes share the `orders` topic key. Add the middleware to each route so outgoing records carry the type header:
 
 ```php
 use KafkaBus\Core\Publishers\Routing\Options;
+use KafkaBus\Core\Publishers\Routing\PublisherRoutesBuilder;
 use KafkaBus\TypedTopics\PublisherTypedTopicMiddleware;
 
 $options = new Options(middleware: [new PublisherTypedTopicMiddleware()]);
-
-$publisherRoutes
-    ->add(DeliveryUpdated::class, 'delivery-events', $options)
-    ->add(DeliveryCompleted::class, 'delivery-events', $options);
-
-$bus->publish(DeliveryUpdated::from(['delivery_id' => 42]));
+$routes = PublisherRoutesBuilder::make($topics)
+    ->add(OrderPlaced::class, 'orders', $options)
+    ->add(OrderCancelled::class, 'orders', $options)
+    ->build();
 ```
 
-## Receive messages
+Pass `$routes` to `PublisherFactory(routes: $routes)` when constructing the bus. Then publish with `$bus->publish(OrderPlaced::from(['order_id' => 42]))`.
 
-Register a `TypedTopicHandler` instance as the topic handler. Pair each header value with a callable. Supply a factory as the third argument to `on()` or use the `#[MessageFactory]` attribute. An annotated closure also works as a handler.
+## 3. Register a typed receiver
 
 ```php
-use KafkaBus\Core\Receivers\Attributes\MessageFactory;
+use KafkaBus\Core\Receivers\Routing\ReceiverBuilder;
 use KafkaBus\Core\Receivers\Routing\RouteInfo;
 use KafkaBus\Messages\Factories\JsonMessageFactory;
 use KafkaBus\TypedTopics\MessageRoutes;
 use KafkaBus\TypedTopics\TypedTopicHandler;
 
-final class DeliveryTopicHandler extends TypedTopicHandler
+final class OrdersHandler extends TypedTopicHandler
 {
     protected function routes(MessageRoutes $routes): void
     {
         $routes
-            ->on(DeliveryUpdated::TYPE, $this->onUpdated(...))
-            ->on(DeliveryCompleted::TYPE, $this->onCompleted(...));
-    }
-
-    #[MessageFactory(new JsonMessageFactory(DeliveryUpdated::class))]
-    private function onUpdated( DeliveryUpdated $message): void 
-    {
-        // Apply the delivery update.
-    }
-
-    #[MessageFactory(new JsonMessageFactory(DeliveryCompleted::class))]
-    private function onCompleted(DeliveryCompleted $message): void
-    {
-        // Apply the delivery result.
+            ->on('order.placed', static function (OrderPlaced $message): void {
+                echo 'Placed: ' . $message['order_id'] . PHP_EOL;
+            }, new JsonMessageFactory(OrderPlaced::class))
+            ->on('order.cancelled', static function (OrderCancelled $message): void {
+                echo 'Cancelled: ' . $message['order_id'] . PHP_EOL;
+            }, new JsonMessageFactory(OrderCancelled::class))
+            ->onUnroutableThrow();
     }
 }
 
-$receiverBuilder->add(new RouteInfo('delivery-events', new DeliveryTopicHandler()));
+$receiver = ReceiverBuilder::make($topics)
+    ->add(new RouteInfo('orders', new OrdersHandler()))->build();
 ```
 
-The first parameter receives the decoded message. Add any of `$headers`, `$offset`, `$partition`, `$key`, `$topic` or `$topicName` after it in any order. Use `ConsumerMessageInterface` or `RdKafka\Message` as the parameter type to receive the full record. Optional parameters outside these conventions keep their defaults. The same arguments are available to ordinary receiver handlers and to the callbacks registered with `whenHeaderMissing()` or `onUnroutable()`.
+Pass `$receiver` to the bus constructor. A worker subscribed to `orders.events` now dispatches both types. You can also select factories through `#[MessageFactory(...)]` or an invokable handler implementing `ProvidesMessageFactory`.
 
-### Records without a matching route
+## Unknown types and legacy messages
 
-Use `whenHeaderMissing($this->onUpdated(...))` in `routes()` if records without an `x-message-type` header have a known legacy format. Records with an empty or unknown type still follow the unroutable policy.
+`whenHeaderMissing($handler, $factory)` supplies a legacy route for records without a type header. Unknown types use the unroutable policy:
 
-By default, an unroutable record passes through the receiver pipeline and the handler returns successfully. Offset commits follow the application's existing Kafka Bus configuration. To change the policy, configure one of these methods in `routes()`.
+- `onUnroutableThrow()` raises an exception through the receiver error path.
+- `onUnroutableLog($logger)` logs the reason and record metadata, then returns normally.
+- `onUnroutable($handler)` receives an `UnroutableMessage` containing the record, reason and message type.
 
-- `onUnroutableLog($logger)` logs an error with the reason, type, topic, partition and offset, then completes processing.
-- `onUnroutableThrow()` raises an exception through the normal receiver error path.
-- `onUnroutable($handler)` passes an `UnroutableMessage` with the original record and reason to a custom handler.
+With no unroutable handler, the record is skipped silently. A worker can commit its offset after dispatch returns normally. Choose the policy explicitly for your application. Factory and business-handler failures propagate through the receiver pipeline.
 
-Factory and business-handler errors follow the normal receiver error path.
+The outer `TypedTopicHandler::__invoke()` receives headers through Core metadata injection. Inner callbacks registered with `on()` receive the decoded message; capture any additional dependencies in the callable.
+
+[Issues and contributions](https://github.com/kafka-bus/kafka-bus) · [Releases](https://github.com/kafka-bus/kafka-bus/releases) · [MIT License](https://github.com/kafka-bus/kafka-bus/blob/HEAD/LICENSE.md).

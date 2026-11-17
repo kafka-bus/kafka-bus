@@ -1,15 +1,22 @@
 {
     "name": "kafka-bus/commiter",
-    "description": "Consumer offset committer and producer idempotency middleware for Kafka Bus — prevents duplicate message processing",
+    "description": "Message processing history, idempotency keys and attempt limiting middleware for Kafka Bus",
+    "type": "library",
     "keywords": [
+        "php",
         "kafka",
         "kafka-bus",
-        "Apache Kafka",
-        "commiter",
         "idempotency",
+        "deduplication",
+        "middleware",
         "inbox"
     ],
     "homepage": "https://github.com/kafka-bus/commiter",
+    "support": {
+        "issues": "https://github.com/kafka-bus/kafka-bus/issues",
+        "source": "https://github.com/kafka-bus/commiter",
+        "docs": "https://github.com/kafka-bus/commiter#readme"
+    },
     "license": "MIT",
     "authors": [
         {

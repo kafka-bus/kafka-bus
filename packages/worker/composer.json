@@ -1,14 +1,23 @@
 {
     "name": "kafka-bus/worker",
-    "description": "Kafka polling worker infrastructure for Kafka Bus — reads messages from Kafka and dispatches them to the Bus",
+    "description": "Apache Kafka consumer workers for PHP with topic subscriptions, bus dispatch and synchronous offset commits",
+    "type": "library",
     "keywords": [
+        "php",
         "kafka",
+        "apache-kafka",
         "kafka-bus",
-        "Apache Kafka",
+        "consumer",
         "worker",
-        "consumer"
+        "consumer-group",
+        "offsets"
     ],
     "homepage": "https://github.com/kafka-bus/worker",
+    "support": {
+        "issues": "https://github.com/kafka-bus/kafka-bus/issues",
+        "source": "https://github.com/kafka-bus/worker",
+        "docs": "https://github.com/kafka-bus/worker#readme"
+    },
     "license": "MIT",
     "authors": [
         {

@@ -1,6 +1,23 @@
 {
     "name": "kafka-bus/kafka-bus",
-    "description": "Kafka Bus: core, commiter, messages, worker, metadata and typed topics in one package",
+    "description": "Apache Kafka messaging for PHP with typed messages, middleware pipelines, topic routing and consumer workers",
+    "type": "library",
+    "keywords": [
+        "php",
+        "kafka",
+        "apache-kafka",
+        "rdkafka",
+        "message-bus",
+        "producer",
+        "consumer",
+        "middleware"
+    ],
+    "homepage": "https://github.com/kafka-bus/kafka-bus",
+    "support": {
+        "issues": "https://github.com/kafka-bus/kafka-bus/issues",
+        "source": "https://github.com/kafka-bus/kafka-bus",
+        "docs": "https://github.com/kafka-bus/kafka-bus#readme"
+    },
     "license": "MIT",
     "authors": [
         {

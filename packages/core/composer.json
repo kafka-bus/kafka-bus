@@ -1,15 +1,23 @@
 {
     "name": "kafka-bus/core",
-    "description": "Core Kafka Bus library — consumer/producer pipelines, topic routing, and connection management for Apache Kafka",
+    "description": "Apache Kafka messaging core for PHP with producer and consumer adapters, topic routing and middleware pipelines",
+    "type": "library",
     "keywords": [
+        "php",
         "kafka",
-        "kafka-bus",
-        "Apache Kafka",
-        "consumer",
+        "apache-kafka",
+        "rdkafka",
+        "message-bus",
         "producer",
-        "pipeline"
+        "consumer",
+        "middleware"
     ],
     "homepage": "https://github.com/kafka-bus/core",
+    "support": {
+        "issues": "https://github.com/kafka-bus/kafka-bus/issues",
+        "source": "https://github.com/kafka-bus/core",
+        "docs": "https://github.com/kafka-bus/core#readme"
+    },
     "license": "MIT",
     "authors": [
         {
