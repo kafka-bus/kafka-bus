@@ -66,8 +66,6 @@ final class WorkerBench
     #[Revs(100)]
     public function benchConsumerStream1000Messages(): void
     {
-        $this->consumer->rewind();
-
         (new ConsumerStream($this->consumer, $this->bus->dispatch(...)))->listen($this->topics);
     }
 }

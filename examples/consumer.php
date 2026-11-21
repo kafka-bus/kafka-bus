@@ -29,8 +29,10 @@ $workerRegistry = MemoryWorkerRegistry::make()
 $runner = (new WorkerRunnerFactory($workerRegistry))
     ->create($bus, 'products-worker');
 
-pcntl_async_signals(true);
+if (\function_exists('pcntl_signal')) {
+    pcntl_async_signals(true);
 
-pcntl_signal(SIGINT, fn () => $runner->forceStop());
+    pcntl_signal(SIGINT, fn () => $runner->forceStop());
+}
 
 $runner->run();

@@ -7,6 +7,7 @@ use KafkaBus\Core\Consumers\Messages\ConsumerMessageConverter;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Exceptions\Consumers\ConsumerException;
 use KafkaBus\Core\Exceptions\Consumers\MessageConsumerException;
+use KafkaBus\Core\Topics\Topic;
 use KafkaBus\Core\Utils\RetryRepeater;
 use RdKafka\Exception;
 use RdKafka\KafkaConsumer;
@@ -15,6 +16,8 @@ use Throwable;
 class Consumer implements ConsumerInterface
 {
     protected ConsumerMessageConverter $consumerMessageNormalizer;
+
+    private bool $subscribed = false;
 
     /**
      * @param KafkaConsumer $consumer
@@ -36,27 +39,53 @@ class Consumer implements ConsumerInterface
         return $this->consumer;
     }
 
+    /**
+     * @throws Exception
+     */
     public function __destruct()
     {
+        $this->unsubscribe();
         $this->consumer->close();
     }
 
-    public function getMessage(): ConsumerMessageInterface
+    /**
+     * @param list<Topic> $topics
+     * @return iterable<ConsumerMessageInterface>
+     *
+     * @throws ConsumerException
+     * @throws Exception
+     * @throws MessageConsumerException
+     */
+    public function start(array $topics): iterable
     {
-        try {
-            $message = $this->consumer
-                ->consume($this->consumerTimeout);
+        $this->subscribe(array_column($topics, 'name'));
 
-            if ($message->err !== RD_KAFKA_RESP_ERR_NO_ERROR) {
-                throw new MessageConsumerException($message);
+        do {
+            try {
+                $message = $this->consumer
+                    ->consume($this->consumerTimeout);
+
+                // @phpstan-ignore-next-line support rdkafka 7.x
+                if ($message === null) {
+                    continue;
+                }
+
+                switch ($message->err) {
+                    case RD_KAFKA_RESP_ERR_NO_ERROR:
+                        yield $this->consumerMessageNormalizer->fromKafka($message);
+                        break;
+                    case RD_KAFKA_RESP_ERR__PARTITION_EOF:
+                    case RD_KAFKA_RESP_ERR__TIMED_OUT:
+                        break;
+                    default:
+                        throw new MessageConsumerException($message);
+                }
             }
-
-            return $this->consumerMessageNormalizer
-                ->fromKafka($message);
+            catch (Exception $exception) {
+                throw new ConsumerException($exception->getMessage(), $exception->getCode(), $exception);
+            }
         }
-        catch (Exception $exception) {
-            throw new ConsumerException($exception->getMessage(), $exception->getCode(), $exception);
-        }
+        while (true);
     }
 
     /**
@@ -79,16 +108,22 @@ class Consumer implements ConsumerInterface
      */
     public function subscribe(array $topicNames): void
     {
+        $this->unsubscribe();
+
         $this->consumer->subscribe($topicNames);
+        $this->subscribed = true;
     }
 
     /**
      * @return void
-     *
+
      * @throws Exception
      */
-    public function unsubscribe(): void
+    private function unsubscribe(): void
     {
-        $this->consumer->unsubscribe();
+        if ($this->subscribed) {
+            $this->consumer->unsubscribe();
+            $this->subscribed = false;
+        }
     }
 }
