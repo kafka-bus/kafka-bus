@@ -68,7 +68,7 @@ final class BusFakerTest
         );
 
         $consumer = $busFaker->connection()->createConsumer(new ConsumerConfig());
-        $message = $consumer->getMessage();
+        $message = iterator_to_array($consumer->start([]))[0];
         $consumer->commit($message);
 
         $busFaker->assertCommitted('orders');

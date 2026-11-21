@@ -6,7 +6,6 @@ namespace KafkaBus\Benchmarks\Fixtures;
 
 use KafkaBus\Core\Consumers\ConsumerInterface;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
-use KafkaBus\Core\Testing\Exceptions\KafkaMessagesEndedException;
 
 /**
  * Консьюмер над готовым массивом сообщений; O(1) на сообщение.
@@ -15,8 +14,6 @@ final class ArrayConsumer implements ConsumerInterface
 {
     public int $commits = 0;
 
-    private int $position = 0;
-
     /**
      * @param list<ConsumerMessageInterface> $messages
      */
@@ -24,22 +21,11 @@ final class ArrayConsumer implements ConsumerInterface
     {
     }
 
-    public function rewind(): void
+    public function start(array $topics): iterable
     {
-        $this->position = 0;
-    }
-
-    public function subscribe(array $topicNames): void
-    {
-    }
-
-    public function unsubscribe(): void
-    {
-    }
-
-    public function getMessage(): ConsumerMessageInterface
-    {
-        return $this->messages[$this->position++] ?? throw new KafkaMessagesEndedException();
+        foreach ($this->messages as $message) {
+            yield $message;
+        }
     }
 
     public function commit(ConsumerMessageInterface $consumerMessage): void

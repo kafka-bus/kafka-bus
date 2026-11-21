@@ -4,19 +4,10 @@ namespace KafkaBus\Worker\Consumers;
 
 use KafkaBus\Core\Consumers\ConsumerInterface;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
-use KafkaBus\Core\Exceptions\Consumers\MessageConsumerException;
-use KafkaBus\Core\Testing\Exceptions\KafkaMessagesEndedException;
 
 final class ConsumerStream implements ConsumerStreamInterface
 {
     protected bool $forceStop = false;
-
-    private const IGNORABLE_CONSUMER_ERRORS = [
-        RD_KAFKA_RESP_ERR__PARTITION_EOF,
-        RD_KAFKA_RESP_ERR__TRANSPORT,
-        RD_KAFKA_RESP_ERR_REQUEST_TIMED_OUT,
-        RD_KAFKA_RESP_ERR__TIMED_OUT,
-    ];
 
     /**
      * @param ConsumerInterface $consumer
@@ -30,27 +21,17 @@ final class ConsumerStream implements ConsumerStreamInterface
 
     public function listen(array $topics): void
     {
-        $this->consumer->subscribe(array_column($topics, 'name'));
+        $messages = $this->consumer->start($topics);
 
-        do {
-            try {
-                $consumerMessage = $this->consumer->getMessage();
+        foreach ($messages as $message) {
+            \call_user_func($this->dispatcher, $message);
 
-                \call_user_func($this->dispatcher, $consumerMessage);
-                $this->consumer->commit($consumerMessage);
-            }
-            catch (MessageConsumerException $exception) {
-                if (! \in_array($exception->consumerMessage->err, self::IGNORABLE_CONSUMER_ERRORS, true)) {
-                    throw $exception;
-                }
-            }
-            catch (KafkaMessagesEndedException) {
-                return;
+            $this->consumer->commit($message);
+
+            if ($this->forceStop) {
+                break;
             }
         }
-        while (! $this->forceStop);
-
-        $this->consumer->unsubscribe();
     }
 
     public function forceStop(): void

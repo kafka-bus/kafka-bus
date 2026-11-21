@@ -164,7 +164,6 @@ final class MemoryLeakBench
 
         // операция = один прогон потока из STREAM_MESSAGES сообщений
         $this->assertNoLeak(static function () use ($consumer, $bus, $topics): void {
-            $consumer->rewind();
             (new ConsumerStream($consumer, $bus->dispatch(...)))->listen($topics);
         }, intdiv(self::OPERATIONS, self::STREAM_MESSAGES));
     }
