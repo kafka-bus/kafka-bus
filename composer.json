@@ -42,7 +42,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",
-        "friendsofphp/php-cs-fixer": "^3.64",
+        "friendsofphp/php-cs-fixer": "^3.95",
         "phpbench/phpbench": "^1.7",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^2.2",
