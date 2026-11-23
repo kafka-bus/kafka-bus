@@ -2,6 +2,16 @@
 
 All notable changes to `kafka-bus` will be documented in this file.
 
+## v2.4.0 - 2026-11-23
+
+### What's Changed
+
+* feat: Добавлена поддержка rdkafka-7.x by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/27
+* feat: Добавлена поддержка PHP 8.6 by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/28
+* fix: Добавлен ConsumerHandler для обработок ошибок брокера для защиты от бесконечного цикла by @popkovkirill in https://github.com/kafka-bus/kafka-bus/pull/29
+
+**Full Changelog**: https://github.com/kafka-bus/kafka-bus/compare/v2.3.2...v2.4.0
+
 ## v2.3.2 - 2026-11-17
 
 ### What's Changed
