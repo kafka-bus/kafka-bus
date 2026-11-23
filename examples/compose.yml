@@ -4,6 +4,8 @@ services:
         hostname: kafka
         ports:
             - 29092:29092
+        volumes:
+            - kafka-data:/var/lib/kafka/data
         environment:
             CLUSTER_ID: qDgFuaIXQlygUAVE0TcSRg
             KAFKA_NODE_ID: 1
@@ -28,3 +30,6 @@ services:
             - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
         depends_on:
             - kafka
+
+volumes:
+    kafka-data:

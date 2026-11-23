@@ -11,6 +11,16 @@ use KafkaBus\Core\Testing\Messages\ConsumerHandlerFaker;
 use KafkaBus\Core\Testing\Messages\ProducerMessageFaker;
 use KafkaBus\Core\Topics\Topic;
 use KafkaBus\Core\Topics\TopicRegistry;
+use Monolog\Formatter\JsonFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\Logger;
+
+$handler = new StreamHandler('php://stderr', Level::Debug);
+$handler->setFormatter(new JsonFormatter());
+
+$logger = new Logger('kafka-bus');
+$logger->pushHandler($handler);
 
 $topicRegistry = (new TopicRegistry())
     ->add(new Topic('production.fact.products.1', 'products'));
@@ -23,7 +33,7 @@ $receiver = ReceiverBuilder::make($topicRegistry)
     ->add(new RouteInfo('products', new ConsumerHandlerFaker()))
     ->build();
 
-$connectionRegistry = ConnectionRegistry::default();
+$connectionRegistry = ConnectionRegistry::default(logger: $logger);
 
 $bus = new Bus(
     connection: $connectionRegistry->connection('default'),

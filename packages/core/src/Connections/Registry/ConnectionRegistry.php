@@ -5,7 +5,9 @@ namespace KafkaBus\Core\Connections\Registry;
 use KafkaBus\Core\Connections\Config;
 use KafkaBus\Core\Connections\Config\ConnectionConfigInterface;
 use KafkaBus\Core\Connections\ConnectionInterface;
+use KafkaBus\Core\Consumers\ConsumerHandlerFactory;
 use KafkaBus\Core\Exceptions\Connections\ConnectionException;
+use Psr\Log\LoggerInterface;
 
 class ConnectionRegistry implements ConnectionRegistryInterface
 {
@@ -47,11 +49,11 @@ class ConnectionRegistry implements ConnectionRegistryInterface
             ?? throw ConnectionException::connectionNotFound($connectionName, array_keys($this->connectionsConfig));
     }
 
-    public static function default(string $host = '127.0.0.1', int $port = 29092): self
+    public static function default(string $host = '127.0.0.1', int $port = 29092, LoggerInterface|null $logger = null): self
     {
         return new self([
             self::DEFAULT_CONNECTION_NAME => new Config\KafkaConnectionConfig("$host:$port"),
             'null' => new Config\NullConnectionConfig(),
-        ]);
+        ], new DriverRegistry(new ConsumerHandlerFactory($logger)));
     }
 }
