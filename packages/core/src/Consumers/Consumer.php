@@ -6,7 +6,7 @@ use KafkaBus\Core\Consumers\Commiters\CommiterInterface;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageConverter;
 use KafkaBus\Core\Consumers\Messages\ConsumerMessageInterface;
 use KafkaBus\Core\Exceptions\Consumers\ConsumerException;
-use KafkaBus\Core\Exceptions\Consumers\MessageConsumerException;
+use KafkaBus\Core\Exceptions\Consumers\ErrorConsumerException;
 use KafkaBus\Core\Topics\Topic;
 use KafkaBus\Core\Utils\RetryRepeater;
 use RdKafka\Exception;
@@ -26,10 +26,11 @@ class Consumer implements ConsumerInterface
      * @param int $consumerTimeout
      */
     public function __construct(
-        protected KafkaConsumer     $consumer,
-        protected CommiterInterface $commiter,
-        protected RetryRepeater     $retryRepeater = new RetryRepeater(),
-        protected int               $consumerTimeout = 2000
+        protected KafkaConsumer          $consumer,
+        protected CommiterInterface      $commiter,
+        private ConsumerHandlerInterface $handler,
+        protected RetryRepeater          $retryRepeater = new RetryRepeater(),
+        protected int                    $consumerTimeout = 2000,
     ) {
         $this->consumerMessageNormalizer = new ConsumerMessageConverter();
     }
@@ -39,12 +40,8 @@ class Consumer implements ConsumerInterface
         return $this->consumer;
     }
 
-    /**
-     * @throws Exception
-     */
     public function __destruct()
     {
-        $this->unsubscribe();
         $this->consumer->close();
     }
 
@@ -54,7 +51,7 @@ class Consumer implements ConsumerInterface
      *
      * @throws ConsumerException
      * @throws Exception
-     * @throws MessageConsumerException
+     * @throws ErrorConsumerException
      */
     public function start(array $topics): iterable
     {
@@ -66,19 +63,20 @@ class Consumer implements ConsumerInterface
                     ->consume($this->consumerTimeout);
 
                 // @phpstan-ignore-next-line support rdkafka 7.x
-                if ($message === null) {
-                    continue;
-                }
+                $error = \is_null($message)
+                    ? RD_KAFKA_RESP_ERR__TIMED_OUT
+                    : $message->err;
 
-                switch ($message->err) {
+                switch ($error) {
                     case RD_KAFKA_RESP_ERR_NO_ERROR:
                         yield $this->consumerMessageNormalizer->fromKafka($message);
                         break;
                     case RD_KAFKA_RESP_ERR__PARTITION_EOF:
                     case RD_KAFKA_RESP_ERR__TIMED_OUT:
+                        $this->handler->throwIfError();
                         break;
                     default:
-                        throw new MessageConsumerException($message);
+                        throw new ErrorConsumerException($error);
                 }
             }
             catch (Exception $exception) {
@@ -98,6 +96,16 @@ class Consumer implements ConsumerInterface
     {
         $this->retryRepeater
             ->execute(fn () => $this->commiter->commit($consumerMessage));
+    }
+
+    /**
+     * @return void
+     *
+     * @throws Exception
+     */
+    public function stop(): void
+    {
+        $this->unsubscribe();
     }
 
     /**

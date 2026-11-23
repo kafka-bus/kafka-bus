@@ -16,5 +16,7 @@ interface ConsumerInterface
      */
     public function start(array $topics): iterable;
 
+    public function stop(): void;
+
     public function commit(ConsumerMessageInterface $consumerMessage): void;
 }

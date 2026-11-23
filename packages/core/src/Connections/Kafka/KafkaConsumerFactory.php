@@ -6,6 +6,8 @@ namespace KafkaBus\Core\Connections\Kafka;
 
 use KafkaBus\Core\Connections\Config\Options;
 use KafkaBus\Core\Consumers\ConsumerConfig;
+use KafkaBus\Core\Consumers\ConsumerHandler;
+use KafkaBus\Core\Consumers\ConsumerHandlerInterface;
 use RdKafka\KafkaConsumer;
 
 final class KafkaConsumerFactory
@@ -18,7 +20,7 @@ final class KafkaConsumerFactory
         $this->confConverter = new KafkaConfConverter();
     }
 
-    public function make(ConsumerConfig $config): KafkaConsumer
+    public function make(ConsumerConfig $config, ConsumerHandlerInterface $handler = new ConsumerHandler()): KafkaConsumer
     {
         $options = $this->options
             ->getConsumerOptions($config->additionalOptions);
@@ -29,6 +31,13 @@ final class KafkaConsumerFactory
             $options['enable.auto.offset.store'] = 'false';
         }
 
-        return new KafkaConsumer($this->confConverter->fromArray($options));
+        $conf = $this->confConverter->fromArray($options);
+        $conf->setErrorCb($handler->error(...));
+
+        if ($handler instanceof KafkaLoggerInterface) {
+            $conf->setLogCb($handler->logging(...));
+        }
+
+        return new KafkaConsumer($conf);
     }
 }

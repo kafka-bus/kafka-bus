@@ -8,6 +8,8 @@ use KafkaBus\Core\Connections\Config\NullConnectionConfig;
 use KafkaBus\Core\Connections\ConnectionInterface;
 use KafkaBus\Core\Connections\KafkaConnection;
 use KafkaBus\Core\Connections\NullConnection;
+use KafkaBus\Core\Consumers\ConsumerHandlerFactory;
+use KafkaBus\Core\Consumers\ConsumerHandlerFactoryInterface;
 use KafkaBus\Core\Exceptions\Connections\DriverException;
 
 class DriverRegistry
@@ -17,8 +19,9 @@ class DriverRegistry
      */
     protected array $drivers = [];
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly ConsumerHandlerFactoryInterface $consumerHandlerFactory = new ConsumerHandlerFactory()
+    ) {
         $this->initDrivers();
     }
 
@@ -52,7 +55,8 @@ class DriverRegistry
     {
         $this->add(
             KafkaConnectionConfig::class,
-            static fn (string $name, KafkaConnectionConfig $config) => new KafkaConnection($name, $config->getOptions())
+            fn (string $name, KafkaConnectionConfig $config) =>
+                new KafkaConnection($name, $config->getOptions(), $this->consumerHandlerFactory)
         );
     }
 

@@ -32,6 +32,8 @@ final class ConsumerStream implements ConsumerStreamInterface
                 break;
             }
         }
+
+        $this->consumer->stop();
     }
 
     public function forceStop(): void

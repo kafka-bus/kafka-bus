@@ -30,6 +30,10 @@ final readonly class ConsumerFaker implements ConsumerInterface
         }
     }
 
+    public function stop(): void
+    {
+    }
+
     public function commit(ConsumerMessageInterface $consumerMessage): void
     {
         $this->connectionFaker->committedMessages[$consumerMessage->topicName()][] = $consumerMessage;

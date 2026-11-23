@@ -28,6 +28,10 @@ final class ArrayConsumer implements ConsumerInterface
         }
     }
 
+    public function stop(): void
+    {
+    }
+
     public function commit(ConsumerMessageInterface $consumerMessage): void
     {
         $this->commits++;

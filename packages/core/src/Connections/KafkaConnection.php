@@ -9,6 +9,7 @@ use KafkaBus\Core\Consumers\Commiters\DefaultCommiter;
 use KafkaBus\Core\Consumers\Commiters\VoidCommiter;
 use KafkaBus\Core\Consumers\Consumer;
 use KafkaBus\Core\Consumers\ConsumerConfig;
+use KafkaBus\Core\Consumers\ConsumerHandlerFactoryInterface;
 use KafkaBus\Core\Consumers\ConsumerInterface;
 use KafkaBus\Core\Producers\Producer;
 use KafkaBus\Core\Producers\ProducerConfig;
@@ -18,16 +19,21 @@ use KafkaBus\Core\Utils\RetryRepeater;
 
 final readonly class KafkaConnection implements ConnectionInterface
 {
-    protected KafkaProducerFactory $producerFactory;
+    private KafkaProducerFactory $producerFactory;
 
-    protected KafkaConsumerFactory $consumerFactory;
+    private KafkaConsumerFactory $consumerFactory;
+
 
     /**
      * @param string $name
      * @param Options $options
+     * @param ConsumerHandlerFactoryInterface $consumerHandlerFactory
      */
-    public function __construct(protected string $name, protected Options $options)
-    {
+    public function __construct(
+        private string $name,
+        private Options $options,
+        private ConsumerHandlerFactoryInterface $consumerHandlerFactory,
+    ) {
         $this->producerFactory = new KafkaProducerFactory($this->options);
         $this->consumerFactory = new KafkaConsumerFactory($this->options);
     }
@@ -54,13 +60,17 @@ final readonly class KafkaConnection implements ConnectionInterface
 
     public function createConsumer(ConsumerConfig $config): ConsumerInterface
     {
-        $consumer = $this->consumerFactory->make($config);
+        $handler = $this->consumerHandlerFactory->create();
+
+        $consumer = $this->consumerFactory
+            ->make($config, $handler);
 
         return new Consumer(
             consumer: $consumer,
             commiter: $config->autoCommit ? new VoidCommiter() : new DefaultCommiter($consumer),
+            handler: $handler,
             retryRepeater: new RetryRepeater(),
-            consumerTimeout: $config->consumerTimeout,
+            consumerTimeout: $config->consumerTimeout
         );
     }
 }

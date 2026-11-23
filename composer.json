@@ -29,6 +29,7 @@
     "require": {
         "php": "^8.2",
         "ext-rdkafka": "*",
+        "monolog/monolog": "^3.13",
         "psr/log": "^1.1|^2.0|^3.0",
         "webmozart/assert": "^1.11|^2.0"
     },

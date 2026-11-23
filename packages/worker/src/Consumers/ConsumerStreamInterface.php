@@ -3,7 +3,7 @@
 namespace KafkaBus\Worker\Consumers;
 
 use KafkaBus\Core\Exceptions\Consumers\ConsumerException;
-use KafkaBus\Core\Exceptions\Consumers\MessageConsumerException;
+use KafkaBus\Core\Exceptions\Consumers\ErrorConsumerException;
 use KafkaBus\Core\Exceptions\Consumers\MessageConsumerNotHandledException;
 use KafkaBus\Core\Topics\Topic;
 
@@ -13,7 +13,7 @@ interface ConsumerStreamInterface
      * @param list<Topic> $topics
      * @return void
      *
-     * @throws MessageConsumerException
+     * @throws ErrorConsumerException
      * @throws MessageConsumerNotHandledException
      * @throws ConsumerException
      */
